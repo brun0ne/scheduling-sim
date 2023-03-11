@@ -1,23 +1,15 @@
-import Process from './classes/Process';
-import Scheduler from './classes/Scheduler';
+import Menu from './classes/Menu';
+import Display from './classes/Display';
 
-import FCFS from './classes/algorithms/FCFS';
 
 function main(){
-    const scheduler = new Scheduler();
-    scheduler.setAlgorithm(new FCFS());
+    const screen = new Display();
+    screen.init("main_canvas");
 
-    scheduler.addProcessToPool(new Process(0, 3));
-    scheduler.addProcessToPool(new Process(0, 5));
-    scheduler.addProcessToPool(new Process(0, 20));
+    window.addEventListener("resize", () => { screen.resizeToFit() });
 
-    console.log(scheduler.simulate());
+    const menu = new Menu();
+    menu.init();
 }
 
 main();
-
-/*
-document.addEventListener("load", function(){
-    main();
-});
-*/

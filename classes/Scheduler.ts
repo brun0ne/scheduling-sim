@@ -11,14 +11,6 @@ export default class Scheduler {
     time: number
 
     constructor(){
-        this.reset();
-    }
-
-    setAlgorithm(algorithm: AccessAlgorithm){
-        this.algorithm = algorithm;
-    }
-
-    reset(): void{
         this.process_pool = [];
         this.process_queue = [];
         this.finished_processes = [];
@@ -26,14 +18,25 @@ export default class Scheduler {
         this.time = 0;
     }
 
-    addProcessToPool(process: Process): void{
+    setAlgorithm(algorithm: AccessAlgorithm): void {
+        this.algorithm = algorithm;
+    }
+
+    reset(): void{
+        this.process_queue = [];
+        this.finished_processes = [];
+
+        this.time = 0;
+    }
+
+    addProcessToPool(process: Process): void {
         this.process_pool.push(process);
     }
 
     nextTick(): void {
         // check for processes which should join the queue
         for (const process of this.process_pool){
-            if (process.start_time == this.time) this.process_queue.push(process);
+            if (process.start_time == this.time) this.process_queue.push(process.getCopy());
         };
 
         // if queue is not empty
@@ -62,7 +65,7 @@ export default class Scheduler {
         this.time++;
     }
 
-    simulate(): any{
+    simulate(): any {
         while (this.process_pool.length != this.finished_processes.length){
             this.nextTick();
         }
@@ -78,6 +81,9 @@ export default class Scheduler {
 
         // maximum time
         let maxTime = Math.max(...this.finished_processes.map(o => o.wait_time));
+
+        // reset back to initial state
+        this.reset();
 
         return { avgWaitTime, maxTime };
     }

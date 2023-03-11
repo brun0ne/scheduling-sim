@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Scheduling Simulator</title>
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <canvas id="main_canvas" width="800" height="600"></canvas>
+
+        <div id="settings">
+            <h1>Scheduling Simulator</h1>
+            
+            <div id="settings_processes">
+                <h2 style="vertical-align: middle">Processes <span id="p_current_count">(0)</span> <span id="clear_button" c>[clear]</span></h2>
+                <div>
+                    <label for="p_count">Count</label>
+                    <input id="p_count" type="text" value="100" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_max_run_time">Max run time</label>
+                    <input id="p_max_run_time" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_max_arrival_time">Max arrival time</label>
+                    <input id="p_max_arrival_time" type="text" value="0" autocomplete="off"/>
+                </div>
+            </div>
+            
+            <div id="add" style="margin-top: 2%;">
+                <button id="add_button">Add</button>
+            </div>
+
+            <div id="settings_algorithm">
+                <h2>Algorithm</h2>
+                <div>
+                    <label for="a_type">Type</label>
+                    <select id="a_type" autocomplete="off">
+                        <option value="fcfs">FCFS</option>
+                        <option value="sjf">SJF</option>
+                        <!--<option value="srtf">SRTF</option>
+                        <option value="rr">RR</option>
+                        <option value="priority">Priority</option>-->
+                    </select>
+                </div>
+                <div style="display: none;" id="a_time_quanta_all">
+                    <label for="a_time_quanta">Time quanta</label>
+                    <input id="a_time_quanta" type="text" value="0" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div id="run" style="margin-top: 2%">
+                <button id="run_button">Run</button>
+            </div>
+        </div>
+
+        <script src="main-bundle.js"></script>
+    </body>
+</html>
