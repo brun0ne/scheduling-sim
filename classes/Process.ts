@@ -1,3 +1,5 @@
+import VisualProcess from "./VisualProcess"
+
 export default class Process {
     static incremented_id = 0
 
@@ -7,6 +9,8 @@ export default class Process {
     time_left: number
 
     wait_time: number
+
+    visual: VisualProcess
 
     constructor(start_time: number, run_time: number){
         this.id = Process.incremented_id;
@@ -18,6 +22,8 @@ export default class Process {
         this.time_left = run_time;
 
         this.wait_time = 0;
+
+        this.visual = new VisualProcess(this);
     }
 
     run(): boolean{

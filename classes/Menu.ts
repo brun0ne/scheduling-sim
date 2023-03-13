@@ -16,11 +16,16 @@ export default class Menu {
     constructor(){
         this.scheduler = new Scheduler();
         this.display = new Display();
+        
+        this.scheduler.initAutoPlay(this.display);
     }
 
     init(): void {
         const run_button = document.getElementById("run_button");
         run_button.addEventListener("click", () => { this.run() });
+
+        const run_with_animation_button = document.getElementById("run_with_animation_button");
+        run_with_animation_button.addEventListener("click", () => { this.run(true) });
 
         const add_button = document.getElementById("add_button");
         add_button.addEventListener("click", () => { this.addProcesses() });
@@ -39,6 +44,51 @@ export default class Menu {
 
         this.display.init("main_canvas");
         this.display.setResizeCallback(() => { this.refreshProcesses() });
+
+        /////// animation buttons
+        
+        const play_pause_button = document.getElementById("animation_play_pause");
+        const stop_button = document.getElementById("animation_stop");
+        const step_button = document.getElementById("animation_step");
+
+        step_button.addEventListener("click", () => {
+            this.scheduler.nextTick();
+            this.scheduler.refreshAnimation(this.display);
+
+            if (this.scheduler.isFinished()){
+                this.scheduler.displayResults();
+                return;
+            }
+        });
+
+        play_pause_button.addEventListener("click", () => {
+            if (this.scheduler.paused){
+                this.scheduler.resumeAnimation();
+                play_pause_button.innerHTML = "Pause";
+            }
+            else{
+                this.scheduler.pauseAnimation();
+                play_pause_button.innerHTML = "Play";
+            }
+        });
+
+        stop_button.addEventListener("click", () => {
+            // go back to menu
+            document.getElementById("settings").style.display = "flex";
+            document.getElementById("results").style.display = "none";
+            document.getElementById("animation_gui").style.display = "none";
+
+            // clear the canvas
+            this.display.ctx.clearRect(0, 0, this.display.ctx.canvas.width, this.display.ctx.canvas.height);
+
+            // reset
+            this.scheduler.reset();
+
+            document.getElementById("animation_play_pause").innerHTML = "Play";
+
+            // draw process preview
+            this.refreshProcesses();
+        });
     }
 
     addProcesses(): void {
@@ -120,7 +170,12 @@ export default class Menu {
         }
     }
 
-    run(): void{
+    run(animation: boolean = false): void{
+        if (this.scheduler.process_pool.length === 0){
+            alert("No processes to run");
+            return;
+        }
+
         const algStr = (<HTMLInputElement> document.getElementById("a_type")).value;
         
         switch(algStr.toLowerCase()){
@@ -156,7 +211,23 @@ export default class Menu {
                 return;
 
         }
+        
+        if (animation){
+            document.getElementById("settings").style.display = "none";
+            document.getElementById("results").style.display = "none";
+            document.getElementById("animation_gui").style.display = "block";
 
-        console.log(this.scheduler.simulate());
+            // clear the canvas
+            this.display.ctx.clearRect(0, 0, this.display.ctx.canvas.width, this.display.ctx.canvas.height);
+
+            // initialize
+            this.scheduler.refreshAnimation(this.display);
+        }
+        else
+        {
+            // return the results immediately
+            const results = this.scheduler.simulate();
+            this.scheduler.displayResults(algStr, results);
+        }
     }
 }
