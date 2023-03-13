@@ -5,6 +5,7 @@ import Scheduler from "./Scheduler";
 
 import FCFS from "./algorithms/FCFS";
 import SJF from "./algorithms/SJF";
+import SRTF from "./algorithms/SRTF";
 
 
 export default class Menu {
@@ -122,6 +123,11 @@ export default class Menu {
             // shortest job first
             case "sjf":
                 this.scheduler.setAlgorithm(new SJF());
+                break;
+
+            // shortest remaining time first
+            case "srtf":
+                this.scheduler.setAlgorithm(new SRTF());
                 break;
 
             default:

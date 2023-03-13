@@ -1,12 +1,12 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
-export default class FCFS implements AccessAlgorithm {
+export default class SRTF implements AccessAlgorithm {
     preprocess(process_queue: Array<Process>): Array<Process> {
-        return process_queue; // do nothing
+        return process_queue.sort((a, b) => a.time_left - b.time_left);
     }
 
     pickNext(process_queue: Array<Process>, previousActiveProcess: Process): Process {
-        return process_queue[0]; // returns the first element (first come)
+        return process_queue[0];
     }
 }

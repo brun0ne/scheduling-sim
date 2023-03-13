@@ -6,7 +6,10 @@ export default class SJF implements AccessAlgorithm {
         return process_queue.sort((a, b) => a.run_time - b.run_time);
     }
 
-    pickNext(process_queue: Array<Process>): Process {
+    pickNext(process_queue: Array<Process>, previousActiveProcess: Process): Process {
+        if (previousActiveProcess != null && previousActiveProcess.time_left > 0)
+            return previousActiveProcess;
+
         return process_queue[0];
     }
 }

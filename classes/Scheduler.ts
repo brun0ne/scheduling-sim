@@ -10,12 +10,16 @@ export default class Scheduler {
 
     time: number
 
+    previousActiveProcess: Process
+
     constructor(){
         this.process_pool = [];
         this.process_queue = [];
         this.finished_processes = [];
 
         this.time = 0;
+
+        this.previousActiveProcess = null;
     }
 
     setAlgorithm(algorithm: AccessAlgorithm): void {
@@ -50,7 +54,7 @@ export default class Scheduler {
             };
 
             // pick a process from the queue to be run in this tick
-            let current_process: Process = this.algorithm.pickNext(this.process_queue);
+            let current_process: Process = this.algorithm.pickNext(this.process_queue, this.previousActiveProcess);
             let finished: boolean = current_process.run();
 
             // if it's finished, remove from queue
@@ -59,6 +63,8 @@ export default class Scheduler {
                 this.finished_processes.push(current_process);
                 this.process_queue.splice(this.process_queue.indexOf(current_process), 1);
             }
+
+            this.previousActiveProcess = current_process;
         }
 
         // increase time
