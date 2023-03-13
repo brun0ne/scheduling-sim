@@ -8,8 +8,10 @@
     <body>
         <canvas id="main_canvas" width="800" height="600"></canvas>
 
-        <div id="results">
-            
+        <div id="results_wrapper">
+            <div id="results_header">Results</div>
+            <div id="results"></div>
+            <button id="results_close">Close</button>
         </div>
 
         <div id="animation_gui">
@@ -20,6 +22,9 @@
                 <div id="animation_info_time">
                     <span>Time: </span><span id="animation_info_time_value"></span>
                 </div> 
+                <div id="animation_is_done" style="color: lime; display: none">
+                    <span>Done!</span>
+                </div>
             </div>
 
             <div id="animation_controls">
@@ -67,7 +72,7 @@
                         <option value="sjf">SJF</option>
                         <option value="srtf">SRTF</option>
                         <option value="rr">RR</option>
-                        <!--<option value="priority">Priority</option>-->
+                        <option value="compare all">compare all</option>
                     </select>
                 </div>
                 <div style="display: none;" id="a_time_quanta_all">

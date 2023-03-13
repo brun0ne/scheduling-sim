@@ -9,6 +9,11 @@ function main(){
     if (typeof document !== "undefined") {
         const menu = new Menu();
         menu.init();
+
+        menu.scheduler.addProcessToPool(new Process(0, 2));
+        menu.scheduler.addProcessToPool(new Process(0, 5));
+        menu.scheduler.addProcessToPool(new Process(0, 3));
+        menu.refreshProcesses();
     }
     else {
         const scheduler = new Scheduler();

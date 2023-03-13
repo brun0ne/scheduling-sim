@@ -2,6 +2,11 @@ import Process from "./Process"
 import AccessAlgorithm from "./AccessAlgorithm"
 import Display from "./Display"
 
+import FCFS from "./algorithms/FCFS"
+import SJF from "./algorithms/SJF"
+import SRTF from "./algorithms/SRTF"
+import RR from "./algorithms/RR"
+
 export default class Scheduler {
     process_queue:    Array<Process>      // processes in queue
     process_pool:     Array<Process>      // all processes 
@@ -117,7 +122,47 @@ export default class Scheduler {
         return results;
     }
 
+    compareAllAndDisplayResults(): void {
+        this.setAlgorithm(new FCFS());
+        const fcfs_results = this.simulate();
+        this.reset();
+
+        this.setAlgorithm(new SJF());
+        const sjf_results = this.simulate();
+        this.reset();
+
+        this.setAlgorithm(new SRTF());
+        const srtf_results = this.simulate();
+        this.reset();
+
+        this.setAlgorithm(new RR(1));
+        const rr1_results = this.simulate();
+        this.reset();
+
+        this.setAlgorithm(new RR(3));
+        const rr3_results = this.simulate();
+        this.reset();
+
+        let resText = `(average wait time)
+
+        FCFS:   ${fcfs_results.avgWaitTime.toFixed(2)}
+        SJF:    ${sjf_results.avgWaitTime.toFixed(2)}
+        SRTF:   ${srtf_results.avgWaitTime.toFixed(2)}
+        RR (1):  ${rr1_results.avgWaitTime.toFixed(2)}
+        RR (3):  ${rr3_results.avgWaitTime.toFixed(2)}`;
+        resText = resText.replace(RegExp("\n", "g"), "<br>");
+
+        const resultsWrapper = document.getElementById("results_wrapper");
+        resultsWrapper.style.display = "flex";
+
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = resText;
+    }
+
     /* animation */
+    /*
+    /*
+    /* */
 
     initAutoPlay(display: Display): void {
         this._display = display;
@@ -132,12 +177,18 @@ export default class Scheduler {
                 if (this.isFinished()){
                     this.pauseAnimation();
                     this.displayResults(this.algorithm.constructor.name);
+                    
+                    this.afterDone();
                 }
             }
         }).bind(this), 1000 / this._speed);
     }
 
     refreshAnimation(display: Display){
+        (<HTMLButtonElement> document.getElementById("animation_play_pause")).disabled = false;
+        (<HTMLButtonElement> document.getElementById("animation_step")).disabled = false;
+        document.getElementById("animation_is_done").style.display = "none";
+
         // get ctx
         const ctx = display.ctx;
         const screenWidth = display.ctx.canvas.width;
@@ -205,16 +256,17 @@ export default class Scheduler {
         if (results == null)
             results = this.getResults();
 
+        // display results
+        const results_wrapper = document.getElementById("results_wrapper");
+        results_wrapper.style.display = "flex";
+
         const results_el = document.getElementById("results");
-
-        results_el.style.display = "block";
-
         results_el.innerHTML = `
         Algorithm: ${algStr.toUpperCase()} ${algStr.toLowerCase() === "rr" ? `(${(<HTMLInputElement> document.getElementById("a_time_quanta")).value})` : ""}
 
-        Average waiting time: ${results.avgWaitTime}
+        Average waiting time: ${results.avgWaitTime.toFixed(2)}
 
-        Maximum waiting time: ${results.maxTime}
+        Maximum waiting time: ${results.maxTime.toFixed(2)}
         `.replace(RegExp("\n", "g"), "<br />");
 }
 
@@ -230,5 +282,12 @@ export default class Scheduler {
         this._speed = speed;
 
         this.initAutoPlay(this._display);
+    }
+
+    afterDone(): void {
+        document.getElementById("animation_is_done").style.display = "block";
+
+        (<HTMLButtonElement> document.getElementById("animation_play_pause")).disabled = true;
+        (<HTMLButtonElement> document.getElementById("animation_step")).disabled = true;
     }
 }

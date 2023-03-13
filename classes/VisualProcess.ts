@@ -28,9 +28,4 @@ export default class VisualProcess {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-
-    interpolateToPos(x: number, y: number, progress: number): void {
-        this.x = this.x + (x - this.x) * progress;
-        this.y = this.y + (y - this.y) * progress;
-    }
 }

@@ -40,10 +40,22 @@ export default class Menu {
                 document.getElementById("a_time_quanta_all").style.display = "block";
             else
                 document.getElementById("a_time_quanta_all").style.display = "none";
+
+            if ((<HTMLSelectElement> e.target).value.toLowerCase() === "compare all")
+                (<HTMLButtonElement> document.getElementById("run_with_animation_button")).disabled = true;
+            else
+                (<HTMLButtonElement> document.getElementById("run_with_animation_button")).disabled = false;
         });
 
         this.display.init("main_canvas");
         this.display.setResizeCallback(() => { this.refreshProcesses() });
+
+        /* results buttons */
+
+        const results_close = document.getElementById("results_close");
+        results_close.addEventListener("click", () => {
+            document.getElementById("results_wrapper").style.display = "none";
+        });
 
         /* animation buttons */
         
@@ -57,6 +69,8 @@ export default class Menu {
 
             if (this.scheduler.isFinished()){
                 this.scheduler.displayResults();
+                this.scheduler.afterDone();
+
                 return;
             }
         });
@@ -75,7 +89,7 @@ export default class Menu {
         stop_button.addEventListener("click", () => {
             // go back to menu
             document.getElementById("settings").style.display = "flex";
-            document.getElementById("results").style.display = "none";
+            document.getElementById("results_wrapper").style.display = "none";
             document.getElementById("animation_gui").style.display = "none";
 
             // clear the canvas
@@ -132,7 +146,7 @@ export default class Menu {
         this.display.ctx.clearRect(0, 0, this.display.ctx.canvas.width, this.display.ctx.canvas.height);
 
         const start_x = this.display.ctx.canvas.width / 2;
-        const start_y = 0;
+        const start_y = 50;
 
         let i = 0;
         let previousWidth = start_x;
@@ -183,7 +197,8 @@ export default class Menu {
         }
 
         const algStr = (<HTMLInputElement> document.getElementById("a_type")).value;
-        
+        let compare_all = false;
+
         switch(algStr.toLowerCase()){
 
             // first come first serve
@@ -212,15 +227,20 @@ export default class Menu {
                 this.scheduler.setAlgorithm(new RR(quantum));
                 break;
 
+            // compare all algorithms
+            case "compare all":
+                compare_all = true;
+                break;
+
             default:
                 console.log("Invalid algorithm");
                 return;
 
         }
         
-        if (animation){
+        if (animation && !compare_all){
             document.getElementById("settings").style.display = "none";
-            document.getElementById("results").style.display = "none";
+            document.getElementById("results_wrapper").style.display = "none";
             document.getElementById("animation_gui").style.display = "block";
 
             // clear the canvas
@@ -231,6 +251,11 @@ export default class Menu {
         }
         else
         {
+            if (compare_all){
+                this.scheduler.compareAllAndDisplayResults();
+                return;
+            }
+
             // return the results immediately
             const results = this.scheduler.simulate();
             this.scheduler.displayResults(algStr, results);
