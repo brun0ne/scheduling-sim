@@ -49,6 +49,12 @@ label {
     align-items: center;
 }
 
+#settings_algorithm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #clear_button{
     color: red;
     font-size: medium;

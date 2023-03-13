@@ -2,8 +2,8 @@ import Process from "./Process"
 import AccessAlgorithm from "./AccessAlgorithm"
 
 export default class Scheduler {
-    process_queue:    Array<Process>    // processes in queue
-    process_pool:     Array<Process>    // all processes 
+    process_queue:    Array<Process>      // processes in queue
+    process_pool:     Array<Process>      // all processes 
     finished_processes: Array<Process>    // finished 
 
     algorithm: AccessAlgorithm
@@ -29,6 +29,8 @@ export default class Scheduler {
     reset(): void{
         this.process_queue = [];
         this.finished_processes = [];
+
+        this.previousActiveProcess = null;
 
         this.time = 0;
     }

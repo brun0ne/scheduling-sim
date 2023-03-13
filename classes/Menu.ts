@@ -4,6 +4,7 @@ import Process from "./Process";
 import Scheduler from "./Scheduler";
 
 import FCFS from "./algorithms/FCFS";
+import RR from "./algorithms/RR";
 import SJF from "./algorithms/SJF";
 import SRTF from "./algorithms/SRTF";
 
@@ -26,6 +27,15 @@ export default class Menu {
 
         const clear_button = document.getElementById("clear_button");
         clear_button.addEventListener("click", () => { this.clearProcesses() });
+
+        const algorithm_select = document.getElementById("a_type");
+        algorithm_select.addEventListener("change", (e: Event) => 
+        { 
+            if ((<HTMLSelectElement> e.target).value.toLowerCase() === "rr")
+                document.getElementById("a_time_quanta_all").style.display = "block";
+            else
+                document.getElementById("a_time_quanta_all").style.display = "none";
+        });
 
         this.display.init("main_canvas");
         this.display.setResizeCallback(() => { this.refreshProcesses() });
@@ -128,6 +138,17 @@ export default class Menu {
             // shortest remaining time first
             case "srtf":
                 this.scheduler.setAlgorithm(new SRTF());
+                break;
+
+            // round robin
+            case "rr":
+                const quantum = parseInt((<HTMLInputElement> document.getElementById("a_time_quanta")).value);
+                if (isNaN(quantum)){
+                    alert("Invalid input");
+                    return;
+                }
+
+                this.scheduler.setAlgorithm(new RR(quantum));
                 break;
 
             default:
