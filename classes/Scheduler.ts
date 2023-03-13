@@ -8,12 +8,14 @@ export default class Scheduler {
     finished_processes: Array<Process>    // finished 
 
     algorithm: AccessAlgorithm
-
     time: number
-
     previousActiveProcess: Process
 
-    paused: boolean
+    /* animation */
+    _paused: boolean
+    _speed: number
+    _interval: NodeJS.Timer
+    _display: Display
 
     constructor(){
         this.process_pool = [];
@@ -24,7 +26,10 @@ export default class Scheduler {
 
         this.previousActiveProcess = null;
 
-        this.paused = true;
+        this._paused = true;
+        this._speed = 1;
+        this._interval = null;
+        this._display = null;
     }
 
     setAlgorithm(algorithm: AccessAlgorithm): void {
@@ -112,9 +117,15 @@ export default class Scheduler {
         return results;
     }
 
+    /* animation */
+
     initAutoPlay(display: Display): void {
-        setInterval((() => {
-            if (!this.paused){
+        this._display = display;
+
+        if (this._interval != null) clearInterval(this._interval);
+
+        this._interval = setInterval((() => {
+            if (!this._paused){
                 this.nextTick();
                 this.refreshAnimation(display);
 
@@ -123,7 +134,7 @@ export default class Scheduler {
                     this.displayResults(this.algorithm.constructor.name);
                 }
             }
-        }).bind(this), 1000);
+        }).bind(this), 1000 / this._speed);
     }
 
     refreshAnimation(display: Display){
@@ -208,10 +219,16 @@ export default class Scheduler {
 }
 
     resumeAnimation(): void {
-        this.paused = false;
+        this._paused = false;
     }
 
     pauseAnimation(): void {
-        this.paused = true;
+        this._paused = true;
+    }
+
+    setAnimationSpeed(speed: number): void {
+        this._speed = speed;
+
+        this.initAutoPlay(this._display);
     }
 }

@@ -107,6 +107,21 @@ label {
     line-height: 200%;
 }
 
+#animation_speed {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    vertical-align: middle;
+}
+
+#animation_speed_slider {
+    float: inherit;
+    padding: 0.5%;
+
+    width: 100px;
+}
+
 button {
     background: black;
     color: white;

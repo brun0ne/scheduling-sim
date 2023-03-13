@@ -45,7 +45,7 @@ export default class Menu {
         this.display.init("main_canvas");
         this.display.setResizeCallback(() => { this.refreshProcesses() });
 
-        /////// animation buttons
+        /* animation buttons */
         
         const play_pause_button = document.getElementById("animation_play_pause");
         const stop_button = document.getElementById("animation_stop");
@@ -62,7 +62,7 @@ export default class Menu {
         });
 
         play_pause_button.addEventListener("click", () => {
-            if (this.scheduler.paused){
+            if (this.scheduler._paused){
                 this.scheduler.resumeAnimation();
                 play_pause_button.innerHTML = "Pause";
             }
@@ -88,6 +88,12 @@ export default class Menu {
 
             // draw process preview
             this.refreshProcesses();
+        });
+
+        /* speed control slider */
+        const speed_slider = document.getElementById("animation_speed_slider");
+        speed_slider.addEventListener("input", (e: Event) => {
+            this.scheduler.setAnimationSpeed(parseInt((<HTMLInputElement> e.target).value));
         });
     }
 
