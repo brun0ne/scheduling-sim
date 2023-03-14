@@ -190,9 +190,11 @@ export default class Scheduler {
     }
 
     refreshAnimation(display: Display){
-        (<HTMLButtonElement> document.getElementById("animation_play_pause")).disabled = false;
-        (<HTMLButtonElement> document.getElementById("animation_step")).disabled = false;
-        document.getElementById("animation_is_done").style.display = "none";
+        if (!this.isFinished()){
+            (<HTMLButtonElement> document.getElementById("animation_play_pause")).disabled = false;
+            (<HTMLButtonElement> document.getElementById("animation_step")).disabled = false;
+            document.getElementById("animation_is_done").style.display = "none";
+        }
 
         // get ctx
         const ctx = display.ctx;
@@ -225,10 +227,12 @@ export default class Scheduler {
         ctx.fillRect(0, 2 * (screenHeight / 3), screenWidth, 1);
 
         // microprocessor
+        ctx.strokeStyle = "white";
         ctx.strokeRect(50, 2 * (screenHeight / 3) - 100, 50, 100);
 
         // black text in the middle saying μP
         ctx.font = "15px Roboto";
+        ctx.textAlign = "center";
         ctx.fillText("μP", 50 + 25, 2 * (screenHeight / 3) - 50);
 
         // draw processes

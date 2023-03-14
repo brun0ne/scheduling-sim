@@ -97,11 +97,13 @@ export default class Menu {
 
             // reset
             this.scheduler.reset();
-
             document.getElementById("animation_play_pause").innerHTML = "Play";
 
             // draw process preview
             this.refreshProcesses();
+
+            // set back the resize callback
+            this.display.setResizeCallback(() => { this.refreshProcesses() });
         });
 
         /* speed control slider */
@@ -248,6 +250,11 @@ export default class Menu {
 
             // initialize
             this.scheduler.refreshAnimation(this.display);
+
+            // set resize callback
+            this.display.resizeCallback = () => {
+                this.scheduler.refreshAnimation(this.display);
+            }
         }
         else
         {
