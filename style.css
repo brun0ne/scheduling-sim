@@ -138,6 +138,14 @@ button:disabled {
     bottom: 1%;
 }
 
+#results {
+    max-height: 15%;
+    position: absolute;
+
+    top: 20%;
+    line-height: 150%;
+}
+
 #animation_gui {
     position: fixed;
     top: 0;

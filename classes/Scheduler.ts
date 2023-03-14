@@ -93,7 +93,7 @@ export default class Scheduler {
         return this.process_pool.length == this.finished_processes.length;
     }
 
-    getResults(): { avgTurnaroundTime: number, maxTime: number } {
+    getResults(): { avgTurnaroundTime: number, maxTime: number, avgWaitingTime: number } {
         // average time
         let avgTurnaroundTime = 0;
         for (const process of this.finished_processes) {
@@ -104,7 +104,14 @@ export default class Scheduler {
         // maximum time
         let maxTime = Math.max(...this.finished_processes.map(o => o.turnaround_time));
 
-        return { avgTurnaroundTime, maxTime };
+        // avarage waiting time
+        let avgWaitingTime = 0;
+        for (const process of this.finished_processes){
+            avgWaitingTime += process.turnaround_time - process.run_time;
+        }
+        avgWaitingTime /= this.finished_processes.length;
+
+        return { avgTurnaroundTime, maxTime, avgWaitingTime };
     }
 
     /* running the simulation */
@@ -112,7 +119,7 @@ export default class Scheduler {
     /*
     /* */
 
-    simulate(): { avgTurnaroundTime: number, maxTime: number } {
+    simulate(): { avgTurnaroundTime: number, maxTime: number, avgWaitingTime: number } {
         while (!this.isFinished()){
             this.nextTick();
         }
@@ -272,7 +279,7 @@ export default class Scheduler {
         finished_processes_el.innerHTML = this.finished_processes.length.toString();
     }
 
-    displayResults(algStr: string = this.algorithm.name, results: { avgTurnaroundTime: number, maxTime: number } = null): void {
+    displayResults(algStr: string = this.algorithm.name, results: { avgTurnaroundTime: number, maxTime: number, avgWaitingTime: number } = null): void {
         // get results
         if (results == null)
             results = this.getResults();
@@ -288,6 +295,8 @@ export default class Scheduler {
         Average turnaround time: ${results.avgTurnaroundTime.toFixed(2)}
 
         Maximum turnaround time: ${results.maxTime.toFixed(2)}
+
+        Average waiting time: ${results.avgWaitingTime.toFixed(2)}
         `.replace(RegExp("\n", "g"), "<br />");
 }
 
