@@ -88,6 +88,15 @@ button:disabled {
     cursor: pointer;
 }
 
+#processes_info {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    margin: 2%;
+    line-height: 200%;
+}
+
 #results_wrapper{
     position: fixed;
     top: 20%;

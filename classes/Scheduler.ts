@@ -107,6 +107,11 @@ export default class Scheduler {
         return { avgWaitTime, maxTime };
     }
 
+    /* running the simulation */
+    /*
+    /*
+    /* */
+
     simulate(): { avgWaitTime: number, maxTime: number } {
         while (!this.isFinished()){
             this.nextTick();
@@ -249,6 +254,18 @@ export default class Scheduler {
 
         const time_el = document.getElementById("animation_info_time_value");
         time_el.innerHTML = this.time.toString();
+
+        const left = (this.process_pool.length - (this.process_queue.length + this.finished_processes.length));
+        const processes_left_to_join_el = document.getElementById("processes_info_left_to_join_value");
+        processes_left_to_join_el.innerHTML = left.toString();
+
+        if (left > 0)
+            processes_left_to_join_el.style.color = "yellow";
+        else
+            processes_left_to_join_el.style.color = "white";
+
+        const finished_processes_el = document.getElementById("processes_info_finished_value");
+        finished_processes_el.innerHTML = this.finished_processes.length.toString();
     }
 
     displayResults(algStr: string = this.algorithm.constructor.name, results: { avgWaitTime: number, maxTime: number } = null): void {
