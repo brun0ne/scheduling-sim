@@ -2,6 +2,8 @@ import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
 export default class SJF implements AccessAlgorithm {
+    name: string = "SJF"
+
     preprocess(process_queue: Array<Process>): Array<Process> {
         return process_queue.sort((a, b) => a.run_time - b.run_time);
     }

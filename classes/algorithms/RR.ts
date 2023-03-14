@@ -7,6 +7,8 @@ export default class RR implements AccessAlgorithm {
     current_quantum: number
     current_processIndex: number
 
+    name: string = "RR"
+
     constructor(quantum: number){
         this.quantum = quantum;
     }

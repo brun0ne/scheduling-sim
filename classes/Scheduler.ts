@@ -181,7 +181,7 @@ export default class Scheduler {
 
                 if (this.isFinished()){
                     this.pauseAnimation();
-                    this.displayResults(this.algorithm.constructor.name);
+                    this.displayResults(this.algorithm.name);
                     
                     this.afterDone();
                 }
@@ -254,7 +254,7 @@ export default class Scheduler {
 
         // refresh info
         const algorithm_el = document.getElementById("animation_info_algorithm_value");
-        algorithm_el.innerHTML = this.algorithm.constructor.name;
+        algorithm_el.innerHTML = this.algorithm.name;
 
         const time_el = document.getElementById("animation_info_time_value");
         time_el.innerHTML = this.time.toString();
@@ -272,7 +272,7 @@ export default class Scheduler {
         finished_processes_el.innerHTML = this.finished_processes.length.toString();
     }
 
-    displayResults(algStr: string = this.algorithm.constructor.name, results: { avgWaitTime: number, maxTime: number } = null): void {
+    displayResults(algStr: string = this.algorithm.name, results: { avgWaitTime: number, maxTime: number } = null): void {
         // get results
         if (results == null)
             results = this.getResults();
