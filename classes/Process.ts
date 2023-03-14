@@ -8,7 +8,7 @@ export default class Process {
     run_time: number
     time_left: number
 
-    wait_time: number
+    turnaround_time: number
 
     visual: VisualProcess
 
@@ -21,7 +21,7 @@ export default class Process {
         this.run_time = run_time;
         this.time_left = run_time;
 
-        this.wait_time = 0;
+        this.turnaround_time = 0;
 
         this.visual = new VisualProcess(this);
     }
@@ -40,7 +40,7 @@ export default class Process {
 
         copy.id = this.id;
         copy.time_left = this.time_left;
-        copy.wait_time = this.wait_time;
+        copy.turnaround_time = this.turnaround_time;
 
         return copy;
     }

@@ -66,9 +66,9 @@ export default class Scheduler {
         {
             this.process_queue = this.algorithm.preprocess(this.process_queue);
 
-            // increase wait_time
+            // increase turnaround time
             for (const process of this.process_queue){
-                process.wait_time++;
+                process.turnaround_time++;
             };
 
             // pick a process from the queue to be run in this tick
@@ -93,18 +93,18 @@ export default class Scheduler {
         return this.process_pool.length == this.finished_processes.length;
     }
 
-    getResults(): { avgWaitTime: number, maxTime: number } {
+    getResults(): { avgTurnaroundTime: number, maxTime: number } {
         // average time
-        let avgWaitTime = 0;
+        let avgTurnaroundTime = 0;
         for (const process of this.finished_processes) {
-            avgWaitTime += process.wait_time;
+            avgTurnaroundTime += process.turnaround_time;
         }
-        avgWaitTime /= this.finished_processes.length;
+        avgTurnaroundTime /= this.finished_processes.length;
 
         // maximum time
-        let maxTime = Math.max(...this.finished_processes.map(o => o.wait_time));
+        let maxTime = Math.max(...this.finished_processes.map(o => o.turnaround_time));
 
-        return { avgWaitTime, maxTime };
+        return { avgTurnaroundTime, maxTime };
     }
 
     /* running the simulation */
@@ -112,7 +112,7 @@ export default class Scheduler {
     /*
     /* */
 
-    simulate(): { avgWaitTime: number, maxTime: number } {
+    simulate(): { avgTurnaroundTime: number, maxTime: number } {
         while (!this.isFinished()){
             this.nextTick();
         }
@@ -148,13 +148,13 @@ export default class Scheduler {
         const rr3_results = this.simulate();
         this.reset();
 
-        let resText = `(average wait time)
+        let resText = `(average turnaround time)
 
-        FCFS:   ${fcfs_results.avgWaitTime.toFixed(2)}
-        SJF:    ${sjf_results.avgWaitTime.toFixed(2)}
-        SRTF:   ${srtf_results.avgWaitTime.toFixed(2)}
-        RR (1):  ${rr1_results.avgWaitTime.toFixed(2)}
-        RR (3):  ${rr3_results.avgWaitTime.toFixed(2)}`;
+        FCFS:   ${fcfs_results.avgTurnaroundTime.toFixed(2)}
+        SJF:    ${sjf_results.avgTurnaroundTime.toFixed(2)}
+        SRTF:   ${srtf_results.avgTurnaroundTime.toFixed(2)}
+        RR (1):  ${rr1_results.avgTurnaroundTime.toFixed(2)}
+        RR (3):  ${rr3_results.avgTurnaroundTime.toFixed(2)}`;
         resText = resText.replace(RegExp("\n", "g"), "<br>");
 
         const resultsWrapper = document.getElementById("results_wrapper");
@@ -272,7 +272,7 @@ export default class Scheduler {
         finished_processes_el.innerHTML = this.finished_processes.length.toString();
     }
 
-    displayResults(algStr: string = this.algorithm.name, results: { avgWaitTime: number, maxTime: number } = null): void {
+    displayResults(algStr: string = this.algorithm.name, results: { avgTurnaroundTime: number, maxTime: number } = null): void {
         // get results
         if (results == null)
             results = this.getResults();
@@ -285,9 +285,9 @@ export default class Scheduler {
         results_el.innerHTML = `
         Algorithm: ${algStr.toUpperCase()} ${algStr.toLowerCase() === "rr" ? `(${(<HTMLInputElement> document.getElementById("a_time_quanta")).value})` : ""}
 
-        Average waiting time: ${results.avgWaitTime.toFixed(2)}
+        Average turnaround time: ${results.avgTurnaroundTime.toFixed(2)}
 
-        Maximum waiting time: ${results.maxTime.toFixed(2)}
+        Maximum turnaround time: ${results.maxTime.toFixed(2)}
         `.replace(RegExp("\n", "g"), "<br />");
 }
 
