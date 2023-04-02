@@ -9,3 +9,7 @@
 #time_slider_info{
     text-align: center;
 }
+
+select {
+    width: 42.5%;
+}

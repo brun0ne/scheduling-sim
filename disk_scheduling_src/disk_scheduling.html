@@ -7,6 +7,8 @@
 
         <link rel="stylesheet" href="../shared/shared.css">
         <link rel="stylesheet" href="style.css">
+
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     </head>
 
     <body>
@@ -60,6 +62,18 @@
                     <label for="disk_size">Disk size (sector count)</label>
                     <input id="disk_size" type="text" value="100" autocomplete="off"/>
                 </div>
+                <!-- real time -->
+                <div>
+                    <label for="c_with_deadline">With deadline</label>
+                    <select id="c_with_deadline" autocomplete="off">
+                        <option value="off">Off</option>
+                        <option value="on">On</option>
+                    </select>
+                </div>
+                <div id="c_max_deadline_all" style="display: none">
+                    <label for="c_max_deadline" style="color: yellow">Max deadline (abs.)</label>
+                    <input id="c_max_deadline" type="text" value="10" autocomplete="off"/>
+                </div>
             </div>
 
             <div id="add" style="margin-top: 2%;">
@@ -70,9 +84,13 @@
                 <h2>Algorithm</h2>
                 <div>
                     <label for="a_type">Type</label>
-                    <select id="a_type" autocomplete="off">
+                    <select id="a_type" autocomplete="off" style="width: 50%">
                         <option value="fcfs">FCFS</option>
                         <option value="sstf">SSTF</option>
+                        <option value="scan">SCAN</option>
+                        <option value="cscan">C-SCAN</option>
+                        <option value="edf">EDF</option>
+                        <option value="fdscan">FD-SCAN</option>
                     </select>
                 </div>
             </div>

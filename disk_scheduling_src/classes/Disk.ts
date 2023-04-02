@@ -1,4 +1,4 @@
-import IAccessAlgorithm from "./IAccessAlgorithm";
+import AccessAlgorithm from "./AccessAlgorithm";
 import ReadCall from "./ReadCall";
 
 type results = {
@@ -13,7 +13,7 @@ export default class Disk {
     call_queue: Array<ReadCall>
     call_finished: Array<ReadCall>
 
-    algorithm: IAccessAlgorithm
+    algorithm: AccessAlgorithm
 
     total_head_movement: number
     time: number
@@ -51,7 +51,7 @@ export default class Disk {
         this.call_pool = [];
     }
 
-    setAlgorithm(algorithm: IAccessAlgorithm): void {
+    setAlgorithm(algorithm: AccessAlgorithm): void {
         this.algorithm = algorithm;
     }
 
@@ -64,10 +64,10 @@ export default class Disk {
         }
 
         // pick next target
-        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue);
+        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION);
 
         // move head
-        const delta = this.algorithm.getDelta(this.head_position, this.call_queue);
+        const delta = this.algorithm.getDelta(this.head_position, this.call_queue, this.MAX_POSITION);
         this.head_position += delta;
 
         this.total_head_movement += Math.abs(delta);
@@ -119,5 +119,9 @@ export default class Disk {
 
         Total disk head movement: ${results.totalHeadMovement.toFixed(0)}
         `.replace(RegExp("\n", "g"), "<br />");
+
+        /*
+        * TODO: missed & satisfied deadlines
+        */
     }
 }

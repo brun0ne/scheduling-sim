@@ -30,6 +30,18 @@ input {
     float: right;
 }
 
+select {
+    background: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+
+    margin-right: 0;
+    float: right;
+}
+
 label {
     display: inline-block;
     padding: 5px;

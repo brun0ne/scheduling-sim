@@ -1,10 +1,10 @@
-import IAccessAlgorithm from "./IAccessAlgorithm";
+import AccessAlgorithm from "./AccessAlgorithm";
 import ReadCall from "./ReadCall";
 
 export default abstract class DeltaToTargetAlgorithm {
-    abstract getNextTarget(current_position: number, calls: Array<ReadCall>): ReadCall;
+    abstract getNextTarget(current_position: number, calls: Array<ReadCall>, max_position?: number): ReadCall;
 
-    getDelta(current_position: number, calls: Array<ReadCall>): -1|0|1 {
+    getDelta(current_position: number, calls: Array<ReadCall>, max_position?: number): number {
         const diff = this.getNextTarget(current_position, calls).position - current_position;
 
         if (diff > 0)

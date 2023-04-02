@@ -1,8 +1,8 @@
 import DeltaToTargetAlgorithm from "../DeltaToTargetAlgorithm";
-import IAccessAlgorithm from "../IAccessAlgorithm";
+import AccessAlgorithm from "../AccessAlgorithm";
 import ReadCall from "../ReadCall";
 
-export default class SSTF extends DeltaToTargetAlgorithm implements IAccessAlgorithm {
+export default class SSTF extends DeltaToTargetAlgorithm implements AccessAlgorithm {
     name: string = "SSTF";
     readOnFly: boolean = false;
 

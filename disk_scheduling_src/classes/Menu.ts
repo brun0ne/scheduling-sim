@@ -8,6 +8,9 @@ import ReadCall from "./ReadCall";
 
 import FCFS from "./algorithms/FCFS";
 import SSTF from "./algorithms/SSTF";
+import SCAN from "./algorithms/SCAN";
+import CSCAN from "./algorithms/CSCAN";
+import EDF from "./algorithms/EDF";
 
 const random = new Random();
 
@@ -75,6 +78,22 @@ export default class Menu {
             time_slider.setAttribute("max", (<HTMLSelectElement> e.target).value);
         });
 
+        /*
+        * deadline on/off
+        * -> show/hide deadline input
+        */
+        const deadline_checkbox = document.getElementById("c_with_deadline");
+        deadline_checkbox.addEventListener("change", (e: Event) => {
+            if ((<HTMLInputElement> e.target).value == "on")
+            {
+                document.getElementById("c_max_deadline_all").style.display = "block";
+            }
+            else
+            {
+                document.getElementById("c_max_deadline_all").style.display = "none";
+            }
+        });
+
         /* 
         * results buttons
         */
@@ -98,17 +117,19 @@ export default class Menu {
         const max_position = parseInt((<HTMLInputElement> document.getElementById("c_max_position")).value);
 
         const max_time = parseInt((<HTMLInputElement> document.getElementById("c_max_time")).value);
-
         const disk_size = parseInt((<HTMLInputElement> document.getElementById("disk_size")).value);
+
+        const deadline: boolean = (<HTMLInputElement> document.getElementById("c_with_deadline")).value == "on";
+        const max_deadline = parseInt((<HTMLInputElement> document.getElementById("c_max_deadline")).value);
 
         console.log(distribution, call_count, min_position, max_position, disk_size);
 
         // check if input is valid
-        if (isNaN(call_count) || isNaN(min_position) || isNaN(max_position) || isNaN(disk_size)) {
+        if (isNaN(call_count) || isNaN(min_position) || isNaN(max_position) || isNaN(disk_size) || isNaN(max_time) || isNaN(max_deadline)) {
             alert("Invalid input");
             return;
         }
-        if (min_position < 0 || max_position > disk_size) {
+        if (min_position < 0 || max_position > disk_size || max_deadline < 0 || max_time < 0 || disk_size < 0) {
             alert("Invalid input");
             return;
         }
@@ -121,11 +142,14 @@ export default class Menu {
                     for (let i = 0; i < call_count; i++) {
                         const position = random.integer(min_position, max_position);
 
-                        this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
+                        if (deadline)
+                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
+                        else
+                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
                     }
                 }
                 break;
-            case "gaussian":
+            case "normal":
                 {
                     const mean = (min_position + max_position) / 2;
                     const variance = parseInt((<HTMLInputElement> document.getElementById("c_variance_position")).value);
@@ -144,7 +168,15 @@ export default class Menu {
                     for (let i = 0; i < call_count; i++) {
                         const position = Math.round(distribution.ppf(random.real(0, 1)));
 
-                        this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
+                        if (position < min_position || position > max_position) {
+                            i--;
+                            continue;
+                        }
+
+                        if (deadline)
+                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
+                        else
+                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
                     }
                 }
                 break;
@@ -194,6 +226,8 @@ export default class Menu {
         /*
         * draw a circle for each call
         * (only if the call is in the time point)
+        * 
+        * calls with deadline are drawn in yellow
         */
         const call_radius = 2;
         const call_y = this.display.ctx.canvas.height / 2;
@@ -208,7 +242,14 @@ export default class Menu {
 
             this.display.ctx.beginPath();
             this.display.ctx.arc(call_x, call_y, call_radius, 0, 2 * Math.PI);
-            this.display.ctx.fillStyle = "#ffffff";
+
+            if (call.absolute_deadline != null && call.absolute_deadline != 0)
+                /* white without deadline */
+                this.display.ctx.fillStyle = "#ffff00";
+            else
+                /* yellow with deadline */
+                this.display.ctx.fillStyle = "#ffffff";
+
             this.display.ctx.fill();
             this.display.ctx.closePath();
         }
@@ -231,6 +272,26 @@ export default class Menu {
                     this.disk.setAlgorithm(new SSTF());
                 }
                 break;
+            case "scan":
+                {
+                    this.disk.setAlgorithm(new SCAN());
+                }
+                break;
+            case "cscan":
+                {
+                    this.disk.setAlgorithm(new CSCAN());
+                }
+                break;
+            case "edf":
+                {
+                    this.disk.setAlgorithm(new EDF());
+                }
+                break;
+            case "fdscan":
+                {
+                    alert("TODO (not implemented)");
+                    return;
+                }
             default:
                 {
                     alert("Invalid algorithm");
