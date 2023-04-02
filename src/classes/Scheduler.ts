@@ -75,11 +75,12 @@ export default class Scheduler {
             let current_process: Process = this.algorithm.pickNext(this.process_queue, this.previousActiveProcess);
             let finished: boolean = current_process.run();
 
-            // if it's finished, remove from queue
+            // if it's finished
             if (finished)
             {
                 this.finished_processes.push(current_process);
-                this.process_queue.splice(this.process_queue.indexOf(current_process), 1);
+                
+                // will be removed from the queue after being displayed in refreshAnimation() 
             }
 
             this.previousActiveProcess = current_process;
@@ -211,7 +212,13 @@ export default class Scheduler {
         // set process positions
         let x = 150;
         for (const process of this.process_queue){
-            const WIDTH = process.time_left * 10;
+            let width_param: number;
+            if (process.time_left > 0)
+                width_param = process.time_left;
+            else
+                width_param = 1;
+
+            const WIDTH = width_param * 10;
             process.visual.setPos(x, 2 * (screenHeight / 3) - 50, WIDTH);
 
             x += WIDTH + 20;
@@ -221,9 +228,16 @@ export default class Scheduler {
         if (this.previousActiveProcess != null){
             this.previousActiveProcess.visual.color = "#ff0000";
         }
+        // if a process just joined, make it green
         for (const process of this.process_queue){
-            if (process != this.previousActiveProcess){
+            if (process != this.previousActiveProcess) { // default is white
                 process.visual.color = "#ffffff";
+            }
+            if (process.start_time == this.time - 1) {   // if it just joined, make it green
+                process.visual.color = "#00ff00";
+            }
+            if (process.time_left <= 0) { // if it's finished, make it blue
+                process.visual.color = "#0000ff";
             }
         }
 
@@ -246,6 +260,14 @@ export default class Scheduler {
         for (const process of this.process_queue){
             if (process.visual.x + process.visual.width < screenWidth - screenWidth / 4){
                 process.visual.draw(ctx);
+            }
+        }
+
+        // remove dead processes
+        for (let i = 0; i < this.process_queue.length; i++){
+            if (this.process_queue[i].time_left <= 0){
+                this.process_queue.splice(i, 1);
+                i--;
             }
         }
 

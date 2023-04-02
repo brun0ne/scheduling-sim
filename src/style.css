@@ -97,6 +97,15 @@ button:disabled {
     line-height: 200%;
 }
 
+#legend {
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    margin: 2%;
+    line-height: 200%;
+}
+
 #results_wrapper{
     position: fixed;
     top: 20%;
