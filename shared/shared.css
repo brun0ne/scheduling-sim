@@ -60,58 +60,6 @@ button:disabled {
     border: 1px solid black;
 }
 
-#settings {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#settings_processes {
-    overflow-y: auto;
-    max-height: fit-content;
-    scrollbar-gutter: stable;
-}
-
-#settings_algorithm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#clear_button{
-    color: red;
-    font-size: medium;
-
-    display: inline-block;
-
-    cursor: pointer;
-}
-
-#processes_info {
-    position: fixed;
-    top: 0;
-    left: 0;
-
-    margin: 2%;
-    line-height: 200%;
-}
-
-#legend {
-    position: fixed;
-    top: 0;
-    right: 0;
-
-    margin: 2%;
-    line-height: 200%;
-}
-
 #results_wrapper{
     position: fixed;
     top: 20%;
@@ -148,6 +96,20 @@ button:disabled {
     top: 8%;
 }
 
+#settings {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
 #results_close{
     position: absolute;
     bottom: 1%;
@@ -161,51 +123,23 @@ button:disabled {
     line-height: 150%;
 }
 
-#animation_gui {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+#clear_button{
+    color: red;
+    font-size: medium;
 
-    display: none;
+    display: inline-block;
+
+    cursor: pointer;
 }
 
-#animation_controls {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-}
-
-#animation_info {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 20%;
-
+#settings_algorithm {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-
-    font-size: 1.2vw;
-    line-height: 200%;
 }
 
-#animation_speed {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    vertical-align: middle;
+.settings_list {
+    overflow-y: auto;
+    max-height: fit-content;
+    scrollbar-gutter: stable;
 }
-
-#animation_speed_slider {
-    float: inherit;
-    padding: 0.5%;
-
-    width: 100px;
-}
-

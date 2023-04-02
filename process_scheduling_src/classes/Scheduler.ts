@@ -1,6 +1,6 @@
 import Process from "./Process"
 import AccessAlgorithm from "./AccessAlgorithm"
-import Display from "./Display"
+import Display from "../../shared/classes/Display"
 
 import FCFS from "./algorithms/FCFS"
 import SJF from "./algorithms/SJF"

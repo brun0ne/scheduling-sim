@@ -1,7 +1,7 @@
 import { Random } from "random-js";
 import gaussian from "gaussian";
 
-import Display from "./Display";
+import Display from "../../shared/classes/Display";
 
 import Process from "./Process";
 import Scheduler from "./Scheduler";

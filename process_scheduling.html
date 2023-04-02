@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Process Scheduling</title>
+
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="shared/shared.css">
+        <link rel="stylesheet" href="process_scheduling_src/style.css">
+    </head>
+    <body>
+        <canvas id="main_canvas" width="800" height="600"></canvas>
+
+        <div id="results_wrapper">
+            <div id="results_header">Results</div>
+            <div id="results"></div>
+            <button id="results_close">Close</button>
+        </div>
+
+        <div id="animation_gui">
+            <div id="legend">
+                <span style="color: red">red</span> - just executed<br />
+                <span style="color: lime">green</span> - just joined the queue<br />
+                <span style="color: blue">blue</span> - just died
+            </div>
+
+            <div id="animation_info">
+                <div id="animation_info_algorithm">
+                    <span>Algorithm: </span><span id="animation_info_algorithm_value"></span><span id="animation_info_algorithm_value_extra"></span>
+                </div>
+                <div id="animation_info_time">
+                    <span>Time: </span><span id="animation_info_time_value"></span>
+                </div> 
+                <div id="animation_is_done" style="color: lime; display: none">
+                    <span>Done!</span>
+                </div>
+            </div>
+
+            <div id="processes_info">
+                <div id="processes_info_left_to_join">
+                    <span>Processes left to join the queue: </span><span id="processes_info_left_to_join_value"></span>
+                </div>
+                <div id="processes_info_finished">
+                    <span>Finished processes: </span><span id="processes_info_finished_value"></span>
+                </div>  
+            </div>
+
+            <div id="animation_controls">
+                <!-- speed slider -->
+                <div id="animation_speed">
+                    <label for="animation_speed_slider">Speed (ticks/s)</label>
+                    <input id="animation_speed_slider" type="range" min="1" max="101" value="1" step="5" autocomplete="off"/>
+                </div>
+
+                <button id="animation_play_pause">Play</button>
+                <button id="animation_stop">Stop</button>
+                <button id="animation_step">Step</button>
+            </div>
+        </div>
+
+        <div id="settings">
+            <h2 style="color: yellow;">Process Scheduling Simulator</h2>
+            
+            <div id="settings_processes" class="settings_list">
+                <h2 style="vertical-align: middle">Processes <span id="p_current_count">(0)</span> <span id="clear_button">[clear]</span></h2>
+                <div>
+                    <label for="p_distribution">Distribution</label>
+                    <select id="p_distribution" autocomplete="off">
+                        <option value="uniform">Uniform</option>
+                        <option value="normal">Normal (Gaussian)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="p_count">Count</label>
+                    <input id="p_count" type="text" value="100" autocomplete="off"/>
+                </div>
+                <div style="display: none" id="p_variance_run_all">
+                    <label for="p_variance_run" style="color: yellow">Variance (run time)</label>
+                    <input id="p_variance_run" type="text" value="10" autocomplete="off"/>
+                </div>
+                <div style="display: none" id="p_variance_arrival_all">
+                    <label for="p_variance_arrival" style="color: yellow">Variance (arrival time)</label>
+                    <input id="p_variance_arrival" type="text" value="0" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_min_run_time">Min run time</label>
+                    <input id="p_min_run_time" type="text" value="1" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_max_run_time">Max run time</label>
+                    <input id="p_max_run_time" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_min_arrival_time">Min arrival time</label>
+                    <input id="p_min_arrival_time" type="text" value="0" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_max_arrival_time">Max arrival time</label>
+                    <input id="p_max_arrival_time" type="text" value="0" autocomplete="off"/>
+                </div>
+            </div>
+            
+            <div id="add" style="margin-top: 2%;">
+                <button id="add_button">Add</button>
+            </div>
+
+            <div id="settings_algorithm">
+                <h2>Algorithm</h2>
+                <div>
+                    <label for="a_type">Type</label>
+                    <select id="a_type" autocomplete="off">
+                        <option value="fcfs">FCFS</option>
+                        <option value="sjf">SJF</option>
+                        <option value="srtf">SRTF</option>
+                        <option value="rr">RR</option>
+                        <option value="compare all">compare all</option>
+                    </select>
+                </div>
+                <div style="display: none;" id="a_time_quanta_all">
+                    <label for="a_time_quanta">Time quanta</label>
+                    <input id="a_time_quanta" type="text" value="3" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div id="run" style="margin-top: 2%">
+                <button id="run_button">Run</button>
+                <button id="run_with_animation_button">Run with animation</button>
+            </div>
+        </div>
+
+        <script src="process_scheduling_src/main-bundle.js"></script>
+    </body>
+</html>

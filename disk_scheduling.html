@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Disk Scheduling</title>
+
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="shared/shared.css">
+        <link rel="stylesheet" href="disk_scheduling_src/style.css">
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="800" height="600"></canvas>
+
+        <div id="results_wrapper">
+            <div id="results_header">Results</div>
+            <div id="results"></div>
+            <button id="results_close">Close</button>
+        </div>
+
+        <div id="settings">
+            <h2 style="color: yellow;">Disk Scheduling Simulator</h2>
+            
+            <div id="settings_calls" class="settings_list">
+                <h2 style="vertical-align: middle">Read calls <span id="p_current_count">(0)</span> <span id="clear_button">[clear]</span></h2>
+                <div>
+                    <label for="p_distribution">Distribution</label>
+                    <select id="p_distribution" autocomplete="off">
+                        <option value="uniform">Uniform</option>
+                        <option value="normal">Normal (Gaussian)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="p_count">Count</label>
+                    <input id="p_count" type="text" value="100" autocomplete="off"/>
+                </div>
+                <div style="display: none" id="c_variance_position_all">
+                    <label for="c_variance_position" style="color: yellow">Variance (position)</label>
+                    <input id="c_variance_position" type="text" value="10" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="c_min_position">Min position</label>
+                    <input id="c_min_position" type="text" value="1" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="c_max_position">Max position</label>
+                    <input id="c_max_position" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="disk_size">Disk size (sector count)</label>
+                    <input id="disk_size" type="text" value="0" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div id="add" style="margin-top: 2%;">
+                <button id="add_button">Add</button>
+            </div>
+
+            <div id="settings_algorithm">
+                <h2>Algorithm</h2>
+                <div>
+                    <label for="a_type">Type</label>
+                    <select id="a_type" autocomplete="off">
+                        <option value="fcfs">FCFS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="run" style="margin-top: 2%">
+                <button id="run_button">Run</button>
+                <button id="run_with_animation_button">Run with animation</button>
+            </div>
+        </div>
+
+        <script src="disk_scheduling_src/main-bundle.js"></script>
+    </body>
+</html>
