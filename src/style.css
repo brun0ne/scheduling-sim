@@ -73,6 +73,12 @@ button:disabled {
     align-items: center;
 }
 
+#settings_processes {
+    overflow-y: auto;
+    max-height: fit-content;
+    scrollbar-gutter: stable;
+}
+
 #settings_algorithm {
     display: flex;
     flex-direction: column;
