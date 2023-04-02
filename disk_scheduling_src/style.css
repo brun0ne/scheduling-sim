@@ -1,0 +1,11 @@
+#time_slider {
+    position: fixed;
+    bottom: 5%;
+    left: 66%;
+    z-index: 1;
+    display: block;
+}
+
+#time_slider_info{
+    text-align: center;
+}

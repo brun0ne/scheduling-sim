@@ -15,7 +15,7 @@
 - EDF (earliest deadline first) - *real time*
 - FD-SCAN (feasible deadline SCAN) - *real time*
 
-[Click to open the simulator](https://brun0ne.github.io/scheduling-sim/)
+[Click to open the app](https://brun0ne.github.io/scheduling-sim/)
 
 ### Installation
 If you want to build it yourself, run:

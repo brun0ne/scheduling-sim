@@ -320,7 +320,7 @@ export default class Scheduler {
 
         Average waiting time: ${results.avgWaitingTime.toFixed(2)}
         `.replace(RegExp("\n", "g"), "<br />");
-}
+    }
 
     resumeAnimation(): void {
         this._paused = false;
