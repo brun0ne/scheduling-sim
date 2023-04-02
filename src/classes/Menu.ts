@@ -1,3 +1,6 @@
+import { Random } from "random-js";
+import gaussian from "gaussian";
+
 import Display from "./Display";
 
 import Process from "./Process";
@@ -8,6 +11,7 @@ import RR from "./algorithms/RR";
 import SJF from "./algorithms/SJF";
 import SRTF from "./algorithms/SRTF";
 
+const random = new Random(); 
 
 export default class Menu {
     scheduler: Scheduler
@@ -45,6 +49,21 @@ export default class Menu {
                 (<HTMLButtonElement> document.getElementById("run_with_animation_button")).disabled = true;
             else
                 (<HTMLButtonElement> document.getElementById("run_with_animation_button")).disabled = false;
+        });
+
+        const distribution_select = document.getElementById("p_distribution");
+        distribution_select.addEventListener("change", (e: Event) =>
+        {
+            if ((<HTMLSelectElement> e.target).value.toLowerCase() === "uniform")
+            {
+                document.getElementById("p_variance_run_all").style.display = "none";
+                document.getElementById("p_variance_arrival_all").style.display = "none";
+            }
+            else if ((<HTMLSelectElement> e.target).value.toLowerCase() === "normal")
+            {
+                document.getElementById("p_variance_run_all").style.display = "block";
+                document.getElementById("p_variance_arrival_all").style.display = "block";
+            }
         });
 
         this.display.init("main_canvas");
@@ -115,22 +134,82 @@ export default class Menu {
 
     addProcesses(): void {
         const process_count = parseInt((<HTMLInputElement> document.getElementById("p_count")).value);
+
+        const min_process_run_time = parseInt((<HTMLInputElement> document.getElementById("p_min_run_time")).value);
         const max_process_run_time = parseInt((<HTMLInputElement> document.getElementById("p_max_run_time")).value);
+
+        const min_process_arrival_time = parseInt((<HTMLInputElement> document.getElementById("p_min_arrival_time")).value);
         const max_process_arrival_time = parseInt((<HTMLInputElement> document.getElementById("p_max_arrival_time")).value);
 
+        const distribution = (<HTMLInputElement> document.getElementById("p_distribution")).value;
+
         // check if input is valid
-        if (isNaN(process_count) || isNaN(max_process_run_time) || isNaN(max_process_arrival_time)){
+        if (isNaN(process_count) || isNaN(max_process_run_time) || isNaN(min_process_run_time) || isNaN(max_process_arrival_time) || isNaN(min_process_arrival_time)){
             alert("Invalid input");
             return;
         }
 
-        for(let i = 0; i < process_count; i++){
-            const arrival_time = Math.floor(Math.random() * max_process_arrival_time);
-            const run_time = Math.floor(Math.random() * max_process_run_time) + 1;
+        switch (distribution){
+            case "uniform":
+                {
+                    for(let i = 0; i < process_count; i++){
+                        const run_time = random.integer(min_process_run_time, max_process_run_time);
+                        const arrival_time = random.integer(min_process_arrival_time, max_process_arrival_time);
+    
+                        this.scheduler.addProcessToPool(new Process(arrival_time, run_time));
+                    }
+                }
+                break;
+            case "normal":
+                {
+                    const mean_run = (min_process_run_time + max_process_run_time) / 2;
+                    const mean_arrival = (min_process_arrival_time + max_process_arrival_time) / 2;
 
-            this.scheduler.addProcessToPool(new Process(arrival_time, run_time));
+                    const variance_run = parseInt((<HTMLInputElement> document.getElementById("p_variance_run")).value);
+                    const variance_arrival = parseInt((<HTMLInputElement> document.getElementById("p_variance_arrival")).value);
+
+                    if (isNaN(variance_run) || isNaN(variance_arrival)){
+                        alert("Invalid input (variance)");
+                        return;
+                    }
+
+                    let distribution_run: gaussian | null, distribution_arrival: gaussian | null;
+
+                    if (variance_run > 0)
+                        distribution_run = gaussian(mean_run, variance_run);
+                    
+                    if (variance_arrival > 0)
+                        distribution_arrival = gaussian(mean_arrival, variance_arrival);
+
+                    for(let i = 0; i < process_count; i++){
+                        let run_time: number, arrival_time: number;
+
+                        if (variance_run > 0)
+                            run_time = Math.round(distribution_run.ppf(random.real(0, 1)));
+                        else
+                            run_time = mean_run;
+
+                        if (variance_arrival > 0)
+                            arrival_time = Math.round(distribution_arrival.ppf(random.real(0, 1)));
+                        else
+                            arrival_time = mean_arrival;
+
+                        if (run_time < min_process_run_time || run_time > max_process_run_time || arrival_time < min_process_arrival_time || arrival_time > max_process_arrival_time)
+                        {
+                            i--;
+                            continue;
+                        }
+
+                        this.scheduler.addProcessToPool(new Process(arrival_time, run_time));
+                    }
+                }
+                break;
+            default:
+                {
+                    alert("Invalid distribution");
+                    return;
+                }
         }
-
         this.refreshProcesses();
     }
 

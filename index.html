@@ -55,12 +55,35 @@
             <div id="settings_processes">
                 <h2 style="vertical-align: middle">Processes <span id="p_current_count">(0)</span> <span id="clear_button" c>[clear]</span></h2>
                 <div>
+                    <label for="p_distribution">Distribution</label>
+                    <select id="p_distribution" autocomplete="off">
+                        <option value="uniform">Uniform</option>
+                        <option value="normal">Normal (Gaussian)</option>
+                    </select>
+                </div>
+                <div>
                     <label for="p_count">Count</label>
                     <input id="p_count" type="text" value="100" autocomplete="off"/>
+                </div>
+                <div style="display: none" id="p_variance_run_all">
+                    <label for="p_variance_run" style="color: yellow">Variance (run time)</label>
+                    <input id="p_variance_run" type="text" value="10" autocomplete="off"/>
+                </div>
+                <div style="display: none" id="p_variance_arrival_all">
+                    <label for="p_variance_arrival" style="color: yellow">Variance (arrival time)</label>
+                    <input id="p_variance_arrival" type="text" value="0" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_min_run_time">Min run time</label>
+                    <input id="p_min_run_time" type="text" value="1" autocomplete="off"/>
                 </div>
                 <div>
                     <label for="p_max_run_time">Max run time</label>
                     <input id="p_max_run_time" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="p_min_arrival_time">Min arrival time</label>
+                    <input id="p_min_arrival_time" type="text" value="0" autocomplete="off"/>
                 </div>
                 <div>
                     <label for="p_max_arrival_time">Max arrival time</label>

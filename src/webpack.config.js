@@ -12,6 +12,11 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".ts", ".js", ".d.ts", ".png"],
+    fallback: {
+      "crypto": require.resolve("crypto-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer/")
+    }
   },
   module: {
     rules: [{
