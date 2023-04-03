@@ -15,6 +15,7 @@ import SCAN from "./SCAN";
 export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgorithm {
     name: string = "FDSCAN"
     readOnFly: boolean = true
+    realTime: boolean = true
 
     nextRealTimeTarget: ReadCall = null
 

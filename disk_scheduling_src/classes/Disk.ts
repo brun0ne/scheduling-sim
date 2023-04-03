@@ -1,8 +1,11 @@
 import AccessAlgorithm from "./AccessAlgorithm";
 import ReadCall from "./ReadCall";
+import RealTimeReadCall from "./RealTimeReadCall";
 
 type results = {
     totalHeadMovement: number
+    missed_deadline: number
+    satisfied_deadline: number
 }
 
 export default class Disk {
@@ -82,6 +85,7 @@ export default class Disk {
                 continue;
 
             if (this.call_queue[i].position == this.head_position) {
+                this.call_queue[i].evaluate(this.time);
                 this.call_finished.push(this.call_queue.splice(i, 1)[0]);
                 
                 const doMoreThanOnePerTick = true;
@@ -108,15 +112,30 @@ export default class Disk {
         }
 
         console.log("Total head movement: " + this.total_head_movement);
+
+        /*
+        * count missed & satisfied deadlines
+        */
+        let missed = 0;
+
+        for (let i = 0; i < this.call_finished.length; i++) {
+            if (!(this.call_finished[i] instanceof RealTimeReadCall))
+                continue;
+
+            if ((<RealTimeReadCall> this.call_finished[i]).missed_deadline)
+                missed++;
+        }
+
+        const satisfied = this.call_finished.length - missed;
     
-        return { totalHeadMovement: this.total_head_movement }
+        return { totalHeadMovement: this.total_head_movement, missed_deadline: missed, satisfied_deadline: satisfied }
     }
 
     /**
      * visualization & output
      */
 
-    displayResults(algStr: string = this.algorithm.name, results: results): void {
+    displayResults(results: results, algStr: string = this.algorithm.name): void {
         const results_wrapper = document.getElementById("results_wrapper");
         results_wrapper.style.display = "flex";
 
@@ -127,8 +146,11 @@ export default class Disk {
         Total disk head movement: ${results.totalHeadMovement.toFixed(0)}
         `.replace(RegExp("\n", "g"), "<br />");
 
-        /*
-        * TODO: missed & satisfied deadlines
-        */
+        if (this.algorithm.realTime && this.algorithm.realTime === true) {
+            results_el.innerHTML += `
+            Missed deadlines: ${results.missed_deadline}
+            Satisfied deadlines: ${results.satisfied_deadline}
+            `.replace(RegExp("\n", "g"), "<br />");
+        }
     }
 }

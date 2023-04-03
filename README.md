@@ -20,7 +20,7 @@
 ### Installation
 If you want to build it yourself, run:
 ```bash
-$ git clone https://github.com/brun0ne/ThreeIO
+$ git clone https://github.com/brun0ne/scheduling-sim
 ```
 
 Then in each of the **src** directories:

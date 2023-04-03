@@ -12,6 +12,7 @@ import SCAN from "./algorithms/SCAN";
 import CSCAN from "./algorithms/CSCAN";
 import EDF from "./algorithms/EDF";
 import FDSCAN from "./algorithms/FDSCAN";
+import RealTimeReadCall from "./RealTimeReadCall";
 
 const random = new Random();
 
@@ -144,7 +145,7 @@ export default class Menu {
                         const position = random.integer(min_position, max_position);
 
                         if (deadline)
-                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
+                            this.disk.addCallToPool(new RealTimeReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
                         else
                             this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
                     }
@@ -175,7 +176,7 @@ export default class Menu {
                         }
 
                         if (deadline)
-                            this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
+                            this.disk.addCallToPool(new RealTimeReadCall(position, random.integer(0, max_time), random.integer(0, max_deadline)));
                         else
                             this.disk.addCallToPool(new ReadCall(position, random.integer(0, max_time)));
                     }
@@ -301,6 +302,6 @@ export default class Menu {
         }
 
         const results = this.disk.simulate();
-        this.disk.displayResults(algStr, results);
+        this.disk.displayResults(results);
     }
 }

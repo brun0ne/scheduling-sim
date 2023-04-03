@@ -7,8 +7,9 @@ import SSTF from "./SSTF";
 * Earliest Deadline First
 */
 export default class EDF extends DeltaToTargetAlgorithm implements AccessAlgorithm {
-    name: string = "EDF";
-    readOnFly: boolean = false;
+    name: string = "EDF"
+    readOnFly: boolean = false
+    realTime: boolean = true
     
     getNextTarget(current_position: number, calls: ReadCall[], max_position?: number): ReadCall {
         let target: ReadCall = null;
