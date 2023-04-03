@@ -28,3 +28,11 @@ Then in each of the **src** directories:
 $ npm install
 $ npx webpack -w
 ```
+
+### Motivation
+I completed these simulations as assignments for my Operating Systems ("Systemy Operacyjne") course.
+
+You're welcome to utilize them to gain an understanding of how these algorithms function or submit a pull request containing bug fixes or new features.
+
+### License
+This project is licensed under the terms of the MIT license.

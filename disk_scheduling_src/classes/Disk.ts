@@ -68,10 +68,10 @@ export default class Disk {
         }
 
         // pick next target
-        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION, this.time);
+        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION, this.time, this.nextTarget);
 
         // move head
-        const delta = this.algorithm.getDelta(this.head_position, this.call_queue, this.MAX_POSITION, this.time);
+        const delta = this.algorithm.getDelta(this.head_position, this.call_queue, this.MAX_POSITION, this.time, this.nextTarget);
         this.head_position += delta;
 
         this.total_head_movement += Math.abs(delta);
@@ -86,6 +86,9 @@ export default class Disk {
                 continue;
 
             if (this.call_queue[i].position == this.head_position) {
+                if (!this.algorithm.readOnFly && this.nextTarget != null)
+                    this.nextTarget = null;
+
                 this.call_queue[i].evaluate(this.time);
                 this.call_finished.push(this.call_queue.splice(i, 1)[0]);
                 

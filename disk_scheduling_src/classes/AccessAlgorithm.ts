@@ -5,7 +5,7 @@ export default interface AccessAlgorithm {
     readOnFly: boolean
     realTime?: boolean
 
-    getNextTarget(current_position: number, calls: Array<ReadCall>, max_position?: number, current_time?: number): ReadCall
+    getNextTarget(current_position: number, calls: Array<ReadCall>, max_position?: number, current_time?: number, currentTarget?: ReadCall): ReadCall
 
-    getDelta(current_position: number, calls: Array<ReadCall>, max_position?: number, current_time?: number): number
+    getDelta(current_position: number, calls: Array<ReadCall>, max_position?: number, current_time?: number, currentTarget?: ReadCall): number
 }

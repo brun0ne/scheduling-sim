@@ -1,8 +1,7 @@
 export default class ReadCall {
     position: number
     appearance_time: number
-
-    real_time: boolean = false
+    
     absolute_deadline?: number
 
     constructor(position: number, appearance_time: number = 0) {
