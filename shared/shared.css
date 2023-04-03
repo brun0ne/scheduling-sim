@@ -128,11 +128,16 @@ button:disabled {
 }
 
 #results {
-    max-height: 15%;
-    position: absolute;
-
     top: 20%;
     line-height: 150%;
+
+    overflow-y: auto;
+    max-height: 70%;
+    scrollbar-gutter: stable;
+
+    width: 90%;
+
+    text-align: center;
 }
 
 #clear_button{

@@ -156,4 +156,30 @@ export default class Disk {
             `.replace(RegExp("\n", "g"), "<br />");
         }
     }
+
+    compareAllAndDisplayResults(algorithms: Array<AccessAlgorithm>): void {
+        const results_wrapper = document.getElementById("results_wrapper");
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results");
+        results_el.innerHTML = "";
+
+        for (let i = 0; i < algorithms.length; i++) {
+            this.setAlgorithm(algorithms[i]);
+            const results = this.simulate();
+
+            results_el.innerHTML += `
+            Algorithm: ${algorithms[i].name.toUpperCase()}
+            Total disk head movement: ${results.totalHeadMovement.toFixed(0)}
+            `.replace(RegExp("\n", "g"), "<br />");
+
+            if (this.algorithm.realTime && this.algorithm.realTime === true) {
+                results_el.innerHTML += `Missed deadlines: ${results.missed_deadline}
+                Satisfied deadlines: ${results.satisfied_deadline}
+                `.replace(RegExp("\n", "g"), "<br />");
+            }
+
+            results_el.innerHTML += "<br />";
+        }
+    }
 }

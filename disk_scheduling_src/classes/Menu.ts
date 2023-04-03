@@ -52,7 +52,7 @@ export default class Menu {
         this.display.setResizeCallback(() => { this.refreshCalls() });
 
         /*
-         * algorithm select
+         * distribution select
          */
         const distribution_select = document.getElementById("c_distribution");
         distribution_select.addEventListener("change", (e: Event) =>
@@ -64,6 +64,23 @@ export default class Menu {
             else if ((<HTMLSelectElement> e.target).value.toLowerCase() === "normal")
             {
                 document.getElementById("c_variance_position_all").style.display = "block";
+            }
+        });
+
+        /**
+         * algorithm select
+         * -> disable running with animation if compare_all
+         */
+        const algorithm_select = document.getElementById("a_type");
+        algorithm_select.addEventListener("change", (e: Event) =>
+        {
+            if ((<HTMLSelectElement> e.target).value.toLowerCase() === "compare_all")
+            {
+                document.getElementById("run_with_animation_button").setAttribute("disabled", "true");
+            }
+            else
+            {
+                document.getElementById("run_with_animation_button").removeAttribute("disabled");
             }
         });
 
@@ -244,6 +261,7 @@ export default class Menu {
 
     run(animation: boolean = false): void {
         const algStr = (<HTMLInputElement> document.getElementById("a_type")).value;
+        let compare_all: boolean = false;
 
         switch(algStr.toLowerCase()){
             case "fcfs":
@@ -276,11 +294,30 @@ export default class Menu {
                     this.disk.setAlgorithm(new FDSCAN());
                 }
                 break;
+            case "compare_all":
+                {
+                    compare_all = true;
+                }
+                break;
             default:
                 {
                     alert("Invalid algorithm");
                     return;
                 }
+        }
+
+        if (compare_all) {
+            const algorithms = [
+                new FCFS(),
+                new SSTF(),
+                new SCAN(),
+                new CSCAN(),
+                new EDF(),
+                new FDSCAN()
+            ];
+
+            this.disk.compareAllAndDisplayResults(algorithms);
+            return;
         }
 
         if (animation) {
