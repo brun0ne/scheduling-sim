@@ -10,16 +10,16 @@ export default class SCAN extends DeltaToTargetAlgorithm implements AccessAlgori
 
     getNextTarget(current_position: number, calls: ReadCall[]): ReadCall {
         /* 
-        * target is not used (readOnFly = true)
-        */
+         * target is not used (readOnFly = true)
+         */
 
         return null;
     }
 
     getDelta(current_position: number, calls: ReadCall[], max_position: number): -1|0|1 {
         /* 
-        * change direction at the edges
-        */
+         * change direction at the edges
+         */
 
         if (this.direction) {
             if (current_position >= max_position) {

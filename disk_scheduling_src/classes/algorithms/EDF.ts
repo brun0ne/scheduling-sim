@@ -4,8 +4,8 @@ import ReadCall from "../ReadCall";
 import SSTF from "./SSTF";
 
 /*
-* Earliest Deadline First
-*/
+ * Earliest Deadline First
+ */
 export default class EDF extends DeltaToTargetAlgorithm implements AccessAlgorithm {
     name: string = "EDF"
     readOnFly: boolean = false
@@ -24,8 +24,8 @@ export default class EDF extends DeltaToTargetAlgorithm implements AccessAlgorit
         }
 
         /*
-        * if there is no real time call, pick the closest one (SSTF)
-        */
+         * if there is no real time call, pick the closest one (SSTF)
+         */
         if (target == null) {
             target = new SSTF().getNextTarget(current_position, calls);
         }

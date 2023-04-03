@@ -1,3 +1,4 @@
+import Display from "../../shared/classes/Display";
 import AccessAlgorithm from "./AccessAlgorithm";
 import ReadCall from "./ReadCall";
 import RealTimeReadCall from "./RealTimeReadCall";
@@ -78,9 +79,9 @@ export default class Disk {
         // check if any call is ready
         for (let i = 0; i < this.call_queue.length; i++) {
             /*
-            * if algorithm is not set to read on fly
-            *   skip calls that are not the next target
-            */
+             * if algorithm is not set to read on fly
+             *   skip calls that are not the next target
+             */
             if (!this.algorithm.readOnFly && this.call_queue[i] != this.nextTarget)
                 continue;
 
@@ -114,8 +115,8 @@ export default class Disk {
         console.log("Total head movement: " + this.total_head_movement);
 
         /*
-        * count missed & satisfied deadlines
-        */
+         * count missed & satisfied deadlines
+         */
         let missed = 0;
 
         for (let i = 0; i < this.call_finished.length; i++) {

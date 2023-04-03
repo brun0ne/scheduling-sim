@@ -5,6 +5,7 @@ import Display from "../../shared/classes/Display";
 
 import Disk from "./Disk";
 import ReadCall from "./ReadCall";
+import RealTimeReadCall from "./RealTimeReadCall";
 
 import FCFS from "./algorithms/FCFS";
 import SSTF from "./algorithms/SSTF";
@@ -12,17 +13,21 @@ import SCAN from "./algorithms/SCAN";
 import CSCAN from "./algorithms/CSCAN";
 import EDF from "./algorithms/EDF";
 import FDSCAN from "./algorithms/FDSCAN";
-import RealTimeReadCall from "./RealTimeReadCall";
+
+import AnimationGUI from "./AnimationGUI";
 
 const random = new Random();
 
 export default class Menu {
     display: Display
     disk: Disk
+    animationGUI: AnimationGUI
 
     constructor() {
         this.display = new Display();
         this.disk = new Disk();
+        
+        this.animationGUI = new AnimationGUI(this);
     }
 
     init(): void {
@@ -38,12 +43,17 @@ export default class Menu {
         const clear_button = document.getElementById("clear_button");
         clear_button.addEventListener("click", () => { this.clearCalls() });
 
+        /*
+         * init 
+         * set callback for resize
+         */
         this.display.init("main_canvas");
+        this.animationGUI.init();
         this.display.setResizeCallback(() => { this.refreshCalls() });
 
         /*
-        * algorithm select
-        */
+         * algorithm select
+         */
         const distribution_select = document.getElementById("c_distribution");
         distribution_select.addEventListener("change", (e: Event) =>
         {
@@ -58,10 +68,10 @@ export default class Menu {
         });
 
         /*
-        * time slider
-        * -> refresh info
-        * -> refresh calls
-        */
+         * time slider
+         * -> refresh info
+         * -> refresh calls
+         */
         const time_slider = document.getElementById("time_slider_input");
         time_slider.addEventListener("input", (e: Event) => {
             const time_slider_info = document.getElementById("time_slider_info");
@@ -71,9 +81,9 @@ export default class Menu {
         });
 
         /*
-        * max time change
-        * -> update time slider
-        */
+         * max time change
+         * -> update time slider
+         */
         const max_time_input = document.getElementById("c_max_time");
         max_time_input.addEventListener("input", (e: Event) => {
             const time_slider = document.getElementById("time_slider_input");
@@ -81,9 +91,9 @@ export default class Menu {
         });
 
         /*
-        * deadline on/off
-        * -> show/hide deadline input
-        */
+         * deadline on/off
+         * -> show/hide deadline input
+         */
         const deadline_checkbox = document.getElementById("c_with_deadline");
         deadline_checkbox.addEventListener("change", (e: Event) => {
             if ((<HTMLInputElement> e.target).value == "on")
@@ -97,16 +107,16 @@ export default class Menu {
         });
 
         /* 
-        * results buttons
-        */
+         * results buttons
+         */
         const results_close = document.getElementById("results_close");
         results_close.addEventListener("click", () => {
             document.getElementById("results_wrapper").style.display = "none";
         });
 
         /*
-        * refresh calls 
-        */
+         * refresh calls 
+         */
         this.disk.init();
         this.refreshCalls();
     }
@@ -207,9 +217,9 @@ export default class Menu {
         this.display.ctx.clearRect(0, 0, this.display.ctx.canvas.width, this.display.ctx.canvas.height);
 
         /*
-        * draw a rect representing the disk
-        * from 0 to disk_size
-        */
+         * draw a rect representing the disk
+         * from 0 to disk_size
+         */
         const disk_height = 50;
         const disk_y = this.display.ctx.canvas.height / 2 - disk_height / 2;
 
@@ -217,8 +227,8 @@ export default class Menu {
         this.display.ctx.strokeRect(this.display.ctx.canvas.width / 2, disk_y, this.display.ctx.canvas.width / 2 - 50, disk_height);
 
         /* 
-        * add text "0" nad "disk_size" at the edges
-        */
+         * add text "0" and disk_size at the edges
+         */
         this.display.ctx.font = "20px Arial";
         this.display.ctx.fillStyle = "#ffffff";
         this.display.ctx.textAlign = "center";
@@ -226,41 +236,13 @@ export default class Menu {
         this.display.ctx.fillText(this.disk.MAX_POSITION.toString(), this.display.ctx.canvas.width - 50, disk_y + disk_height + 25);
 
         /*
-        * draw a circle for each call
-        * (only if the call is in the time point)
-        * 
-        * calls with deadline are drawn in yellow
-        */
-        const call_radius = 2;
-        const call_y = this.display.ctx.canvas.height / 2;
-
-        for (let i = 0; i < this.disk.call_pool.length; i++) {
-            const call = this.disk.call_pool[i];
-
-            if (call.appearance_time != time_point)
-                continue;
-
-            const call_x = this.display.ctx.canvas.width / 2 + (this.display.ctx.canvas.width / 2 - 50) * call.position / this.disk.MAX_POSITION;
-
-            this.display.ctx.beginPath();
-            this.display.ctx.arc(call_x, call_y, call_radius, 0, 2 * Math.PI);
-
-            if (call.absolute_deadline != null && call.absolute_deadline != 0)
-                /* white without deadline */
-                this.display.ctx.fillStyle = "#ffff00";
-            else
-                /* yellow with deadline */
-                this.display.ctx.fillStyle = "#ffffff";
-
-            this.display.ctx.fill();
-            this.display.ctx.closePath();
-        }
+         * AnimationGUI handles drawing the calls
+         */
+        const callsToDraw = this.disk.call_pool.filter((call) => (call.appearance_time <= time_point));
+        this.animationGUI.drawCalls(this.display.ctx.canvas.width / 2, disk_y, this.display.ctx.canvas.width / 2 - 50, disk_height, callsToDraw);
     }
 
     run(animation: boolean = false): void {
-        if (animation)
-            return;
-
         const algStr = (<HTMLInputElement> document.getElementById("a_type")).value;
 
         switch(algStr.toLowerCase()){
@@ -301,7 +283,12 @@ export default class Menu {
                 }
         }
 
-        const results = this.disk.simulate();
-        this.disk.displayResults(results);
+        if (animation) {
+            this.animationGUI.startAnimation();
+        }
+        else {
+            const results = this.disk.simulate();
+            this.disk.displayResults(results);
+        }
     }
 }

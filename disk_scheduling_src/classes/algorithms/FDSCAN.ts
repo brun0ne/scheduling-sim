@@ -1,6 +1,7 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import DeltaToTargetAlgorithm from "../DeltaToTargetAlgorithm";
 import ReadCall from "../ReadCall";
+import RealTimeReadCall from "../RealTimeReadCall";
 import SCAN from "./SCAN";
 
 /**
@@ -25,7 +26,7 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
         /*
         * if there are no real-time calls in the queue, then the algorithm behaves like SCAN
         */
-        if (!call_queue.some(call => call.real_time))
+        if (!call_queue.some(call => call instanceof RealTimeReadCall))
             return this.inner_SCAN.getNextTarget(head_position, call_queue);
 
         /*
@@ -33,7 +34,7 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
         */
         if (!this.nextRealTimeTarget) {
             // get all real-time calls
-            const realTimeCalls = call_queue.filter(call => call.real_time);
+            const realTimeCalls = call_queue.filter(call => call instanceof RealTimeReadCall);
 
             // get the nearest real-time call
             let nearestRealTimeCall = realTimeCalls[0];
@@ -56,13 +57,13 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
         /**
          * remove the target if it has been reached
          */
-        if (this.nextRealTimeTarget && this.nextRealTimeTarget.position == head_position)
-            this.nextRealTimeTarget = undefined;
+        if (this.nextRealTimeTarget != null && this.nextRealTimeTarget.position == head_position)
+            this.nextRealTimeTarget = null;
 
         /**
          * if there is no target, then the algorithm behaves like SCAN
          */
-        if (!this.nextRealTimeTarget)
+        if (this.nextRealTimeTarget == null)
             return this.inner_SCAN.getDelta(head_position, call_queue, max_position);
 
         return super.getDelta(head_position, call_queue, max_position);
