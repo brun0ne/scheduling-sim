@@ -212,6 +212,8 @@ button:disabled {
 
     margin: 2%;
     line-height: 200%;
+
+    z-index: 1;
 }
 
 #animation_speed {

@@ -126,6 +126,9 @@ export default class AnimationGUI {
         this.playing = false;
     
         this.info_is_done.style.display = "none";
+
+        this.play_pause_button.disabled = false;
+        this.step_button.disabled = false;
     }
 
     startAnimation(): void {
