@@ -197,7 +197,7 @@ export default class AnimationGUI {
         const display = this.menu.display;
         const disk = this.menu.disk;
 
-        const call_radius = 2;
+        const call_radius = 3;
         const call_y = START_Y + HEIGHT / 2;
 
         for (let i = 0; i < callsToDraw.length; i++) {

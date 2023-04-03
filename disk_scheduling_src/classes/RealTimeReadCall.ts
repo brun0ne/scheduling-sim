@@ -4,10 +4,10 @@ export default class RealTimeReadCall extends ReadCall {
     absolute_deadline: number
     missed_deadline: boolean = false
 
-    constructor(position: number, appearance_time: number = 0, absolute_deadline: number) {
+    constructor(position: number, appearance_time: number = 0, relative_deadline: number) {
         super(position, appearance_time);
 
-        this.absolute_deadline = absolute_deadline;
+        this.absolute_deadline = appearance_time + relative_deadline;
     }
 
     evaluate(current_time: number): void {
