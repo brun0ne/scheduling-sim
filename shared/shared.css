@@ -163,6 +163,8 @@ button:disabled {
 
     margin: 2%;
     line-height: 200%;
+
+    z-index: 1;
 }
 
 #animation_gui {
@@ -195,6 +197,15 @@ button:disabled {
     align-items: center;
 
     font-size: 1.2vw;
+    line-height: 200%;
+}
+
+.other_info {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    margin: 2%;
     line-height: 200%;
 }
 

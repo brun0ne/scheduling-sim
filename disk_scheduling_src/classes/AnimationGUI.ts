@@ -22,6 +22,10 @@ export default class AnimationGUI {
     info_time: HTMLParagraphElement
     info_is_done: HTMLDivElement
 
+    info_left_to_join: HTMLParagraphElement
+    info_finished: HTMLParagraphElement
+    info_total_head_movement: HTMLParagraphElement
+
     storedSetInterval: NodeJS.Timer
 
     constructor(menu: Menu) {
@@ -40,6 +44,15 @@ export default class AnimationGUI {
         this.info_algorithm = document.getElementById("animation_info_algorithm_value") as HTMLParagraphElement;
         this.info_time = document.getElementById("animation_info_time_value") as HTMLParagraphElement;
         this.info_is_done = document.getElementById("animation_is_done") as HTMLDivElement;
+
+        this.info_left_to_join = document.getElementById("calls_info_left_to_join_value") as HTMLParagraphElement;
+        this.info_finished = document.getElementById("calls_info_finished_value") as HTMLParagraphElement;
+        this.info_total_head_movement = document.getElementById("current_total_head_movement_value") as HTMLParagraphElement;
+
+        /**
+         * hide elements
+         */
+        this.info_is_done.style.display = "none";
 
         /*
          * Bind event listeners
@@ -108,8 +121,11 @@ export default class AnimationGUI {
 
     reset(): void {
         this.menu.disk.init();
+
         this.play_pause_button.innerHTML = "Play";
         this.playing = false;
+    
+        this.info_is_done.style.display = "none";
     }
 
     startAnimation(): void {
@@ -189,8 +205,9 @@ export default class AnimationGUI {
             display.ctx.beginPath();
 
             /* the current target is bigger */
+            const TARGET_MULTIPLIER = 3;
             if (call === disk.nextTarget)
-                display.ctx.arc(call_x, call_y, call_radius * 2, 0, 2 * Math.PI);
+                display.ctx.arc(call_x, call_y, call_radius * TARGET_MULTIPLIER, 0, 2 * Math.PI);
             else
                 display.ctx.arc(call_x, call_y, call_radius, 0, 2 * Math.PI);
 
@@ -220,6 +237,21 @@ export default class AnimationGUI {
             this.info_is_done.style.display = "block";
         else
             this.info_is_done.style.display = "none";
+
+        const to_join = disk.call_pool.length - disk.call_queue.length - disk.call_finished.length;
+
+        this.info_left_to_join.innerHTML = to_join.toString();
+        this.info_finished.innerHTML = disk.call_finished.length.toString();
+        this.info_total_head_movement.innerHTML = disk.total_head_movement.toString();
+
+        /**
+         * if there are processes to join
+         *  - make the number yellow
+         */
+        if (to_join > 0)
+            this.info_left_to_join.style.color = "#ffff00";
+        else
+            this.info_left_to_join.style.color = "#ffffff";
     }
 
     refreshSpeed(): void {
@@ -233,14 +265,24 @@ export default class AnimationGUI {
     }
 
     step(): void {
+        if (this.menu.disk.isFinished())
+            return;
+
         this.menu.disk.nextTick();
         this.drawCurrentState();
 
         if (this.menu.disk.isFinished()){
             this.togglePlaying(false);
-            // this.menu.disk.displayResults();
+            this.menu.disk.displayResults(this.menu.disk.getResults());
             
-            // this.afterDone();
+            this.afterDone();
         }
+    }
+
+    afterDone(): void {
+        this.info_is_done.style.display = "block";
+
+        this.play_pause_button.disabled = true;
+        this.step_button.disabled = true;
     }
 }

@@ -112,8 +112,10 @@ export default class Disk {
             this.nextTick();
         }
 
-        console.log("Total head movement: " + this.total_head_movement);
+        return this.getResults();
+    }
 
+    getResults(): results {
         /*
          * count missed & satisfied deadlines
          */

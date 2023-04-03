@@ -103,7 +103,21 @@
 
         <div id="animation_gui">
             <div id="legend">
-                ...
+                <span style="color: red">red</span> - current target call<br />
+                <span style="color: yellow">yellow</span> - real time call (with deadline)<br />
+                <span style="color: white">white</span> - normal call
+            </div>
+
+            <div id="calls_info" class="other_info">
+                <div id="calls_info_left_to_join">
+                    <span>Processes left to join the queue: </span><span id="calls_info_left_to_join_value"></span>
+                </div>
+                <div id="calls_info_finished">
+                    <span>Finished processes: </span><span id="calls_info_finished_value"></span>
+                </div>  
+                <div id="current_total_head_movement">
+                    <span>Total disk head movement: </span><span id="current_total_head_movement_value"></span>
+                </div>  
             </div>
 
             <div id="animation_info">
