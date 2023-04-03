@@ -64,10 +64,10 @@ export default class Disk {
         }
 
         // pick next target
-        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION);
+        this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION, this.time);
 
         // move head
-        const delta = this.algorithm.getDelta(this.head_position, this.call_queue, this.MAX_POSITION);
+        const delta = this.algorithm.getDelta(this.head_position, this.call_queue, this.MAX_POSITION, this.time);
         this.head_position += delta;
 
         this.total_head_movement += Math.abs(delta);
@@ -75,14 +75,21 @@ export default class Disk {
         // check if any call is ready
         for (let i = 0; i < this.call_queue.length; i++) {
             /*
-            * skip calls that are not next target if algorithm is not set to read on fly
+            * if algorithm is not set to read on fly
+            *   skip calls that are not the next target
             */
             if (!this.algorithm.readOnFly && this.call_queue[i] != this.nextTarget)
                 continue;
 
             if (this.call_queue[i].position == this.head_position) {
                 this.call_finished.push(this.call_queue.splice(i, 1)[0]);
-                break;
+                
+                const doMoreThanOnePerTick = true;
+
+                if (!doMoreThanOnePerTick)
+                    break;
+                else
+                    i--;
             }
         }
         

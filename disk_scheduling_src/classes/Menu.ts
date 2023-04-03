@@ -11,6 +11,7 @@ import SSTF from "./algorithms/SSTF";
 import SCAN from "./algorithms/SCAN";
 import CSCAN from "./algorithms/CSCAN";
 import EDF from "./algorithms/EDF";
+import FDSCAN from "./algorithms/FDSCAN";
 
 const random = new Random();
 
@@ -289,9 +290,9 @@ export default class Menu {
                 break;
             case "fdscan":
                 {
-                    alert("TODO (not implemented)");
-                    return;
+                    this.disk.setAlgorithm(new FDSCAN());
                 }
+                break;
             default:
                 {
                     alert("Invalid algorithm");
