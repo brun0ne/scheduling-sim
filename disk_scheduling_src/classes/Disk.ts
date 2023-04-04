@@ -7,6 +7,7 @@ type results = {
     totalHeadMovement: number
     missed_deadline: number
     satisfied_deadline: number
+    non_real_time: number
 }
 
 export default class Disk {
@@ -123,6 +124,7 @@ export default class Disk {
          * count missed & satisfied deadlines
          */
         let missed = 0;
+        let satisfied = 0;
 
         for (let i = 0; i < this.call_finished.length; i++) {
             if (!(this.call_finished[i] instanceof RealTimeReadCall))
@@ -130,11 +132,18 @@ export default class Disk {
 
             if ((<RealTimeReadCall> this.call_finished[i]).missed_deadline)
                 missed++;
+            if ((<RealTimeReadCall> this.call_finished[i]).missed_deadline == false)
+                satisfied++;
         }
 
-        const satisfied = this.call_finished.length - missed;
+        const non_real_time = this.call_finished.length - missed - satisfied;
     
-        return { totalHeadMovement: this.total_head_movement, missed_deadline: missed, satisfied_deadline: satisfied }
+        return { 
+            totalHeadMovement: this.total_head_movement,
+            missed_deadline: missed,
+            satisfied_deadline: satisfied,
+            non_real_time: non_real_time
+        }
     }
 
     /**
@@ -156,6 +165,7 @@ export default class Disk {
             results_el.innerHTML += `
             Missed deadlines: ${results.missed_deadline}
             Satisfied deadlines: ${results.satisfied_deadline}
+            Non real-time finished: ${results.non_real_time}
             `.replace(RegExp("\n", "g"), "<br />");
         }
     }
