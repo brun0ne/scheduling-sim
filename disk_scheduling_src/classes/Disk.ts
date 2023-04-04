@@ -68,6 +68,25 @@ export default class Disk {
             }
         }
 
+        // if the algorithm abandons calls with not feasible deadline
+        if (this.algorithm.abandonsNotFeasible === true){
+            // remove from the queue and count as not satisfied
+            for (let i = 0; i < this.call_queue.length; i++){
+                if (!(this.call_queue[i] instanceof RealTimeReadCall))
+                    continue;
+
+                if (this.call_queue[i].absolute_deadline < this.time){
+                    if (this.nextTarget == this.call_queue[i])
+                        this.nextTarget = null;
+
+                    (<RealTimeReadCall> this.call_queue[i]).missed_deadline = true;
+                    this.call_finished.push(this.call_queue.splice(i, 1)[0]);
+
+                    i--;
+                }
+            }
+        }
+
         // pick next target
         this.nextTarget = this.algorithm.getNextTarget(this.head_position, this.call_queue, this.MAX_POSITION, this.time, this.nextTarget);
 
