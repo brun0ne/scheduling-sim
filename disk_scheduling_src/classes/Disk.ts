@@ -102,7 +102,10 @@ export default class Disk {
             }
         }
         
-        this.time += 1;
+        /**
+         * Only moving the disk head takes time
+         */
+        this.time += Math.abs(delta);
     }
 
     isFinished(): boolean {
