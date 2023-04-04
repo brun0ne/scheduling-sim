@@ -25,7 +25,10 @@ export default class AnimationGUI {
     info_left_to_join: HTMLParagraphElement
     info_finished: HTMLParagraphElement
     info_total_head_movement: HTMLParagraphElement
+    
+    see_code_button: HTMLButtonElement
 
+    /* setInterval */
     storedSetInterval: NodeJS.Timer
 
     constructor(menu: Menu) {
@@ -48,6 +51,8 @@ export default class AnimationGUI {
         this.info_left_to_join = document.getElementById("calls_info_left_to_join_value") as HTMLParagraphElement;
         this.info_finished = document.getElementById("calls_info_finished_value") as HTMLParagraphElement;
         this.info_total_head_movement = document.getElementById("current_total_head_movement_value") as HTMLParagraphElement;
+
+        this.see_code_button = document.getElementById("code_button") as HTMLButtonElement;
 
         /**
          * hide elements
@@ -72,6 +77,11 @@ export default class AnimationGUI {
         this.speed_slider.addEventListener("input", () => {
             this.speed = parseInt(this.speed_slider.value);
             this.refreshSpeed();
+        });
+
+        this.see_code_button.addEventListener("click", () => {
+            const algorithmName = this.menu.disk.algorithm.name;
+            window.open(`https://github.com/brun0ne/scheduling-sim/blob/main/disk_scheduling_src/classes/algorithms/${algorithmName}.ts`, "_blank").focus();
         });
 
         /**
@@ -111,6 +121,8 @@ export default class AnimationGUI {
             this.MENU.style.display = "flex";
 
             clearInterval(this.storedSetInterval);
+            
+            this.menu.disk.nextTarget = null;
 
             this.menu.display.resizeCallback = () => {
                 this.menu.refreshCalls();

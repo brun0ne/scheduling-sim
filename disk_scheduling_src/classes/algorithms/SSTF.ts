@@ -2,6 +2,9 @@ import DeltaToTargetAlgorithm from "../DeltaToTargetAlgorithm";
 import AccessAlgorithm from "../AccessAlgorithm";
 import ReadCall from "../ReadCall";
 
+/**
+ * SSTF (Shortest Seek Time First)
+ */
 export default class SSTF extends DeltaToTargetAlgorithm implements AccessAlgorithm {
     name: string = "SSTF"
     readOnFly: boolean = false

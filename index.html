@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Simulations Menu</title>
-
-        <meta charset="utf-8">
         <link rel="stylesheet" href="shared/shared.css">
 
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-
         <style>
+            button {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 20px;
+            }
+            
             #wrapper {
                 width: 100%;
                 height: 100%;
@@ -17,17 +17,26 @@
                 justify-content: center;
                 align-items: center;
             }
-
-            button {
-                font-family: 'Montserrat', sans-serif;
-                font-size: 20px;
-            }
         </style>
+
+        <meta name="title" content="Scheduling Simulator">
+        <meta name="description" content="Explore popular process scheduling and disk scheduling algorithms such as FCFS and SJF.">
+        <meta name="keywords" content="scheduling, simulation, processor, disk, CPU, FCFS, SJF, SRTF, RR, SSTF, SCAN, C-SCAN, EDF, FD-SCAN, real-time, performance comparison, code, programming, IT">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+        <meta name="author" content="Brunon Blok">
+
+        <meta name="google-site-verification" content="luJSq0Xq5OSo2torntcuixn3Z_NP76KUeBnjzfJp4Uw" />
     </head>
     <body>
         <div id="wrapper">
             <button id="process_scheduling">Process Scheduling</button>
             <button id="disk_scheduling">Disk Scheduling</button>
+        </div>
+
+        <div id="footer">
+            <a href="https://github.com/brun0ne/scheduling-sim" target="_blank" style="position: absolute; z-index: 5" title="See repository">github</a>
         </div>
 
         <script>

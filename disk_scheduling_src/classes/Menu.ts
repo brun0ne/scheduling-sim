@@ -151,7 +151,7 @@ export default class Menu {
         const deadline: boolean = (<HTMLInputElement> document.getElementById("c_with_deadline")).value == "on";
         const max_deadline = parseInt((<HTMLInputElement> document.getElementById("c_max_deadline")).value);
 
-        console.log(distribution, call_count, min_position, max_position, disk_size);
+        // console.log(distribution, call_count, min_position, max_position, disk_size);
 
         // check if input is valid
         if (isNaN(call_count) || isNaN(min_position) || isNaN(max_position) || isNaN(disk_size) || isNaN(max_time) || isNaN(max_deadline)) {

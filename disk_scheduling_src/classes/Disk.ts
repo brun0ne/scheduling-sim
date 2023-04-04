@@ -46,6 +46,10 @@ export default class Disk {
         this.time = 0;
         this.head_position = 0;
         this.total_head_movement = 0;
+
+        for (let i = 0; i < this.call_pool.length; i++) {
+            this.call_pool[i].joined = false;
+        }
     }
 
     addCallToPool(call: ReadCall): void {
@@ -63,13 +67,14 @@ export default class Disk {
     nextTick(): void {
         // add calls to queue
         for (let i = 0; i < this.call_pool.length; i++) {
-            if (this.call_pool[i].appearance_time == this.time) {
+            if (this.call_pool[i].appearance_time == this.time && this.call_pool[i].joined == false) {
+                this.call_pool[i].joined = true;
                 this.call_queue.push(this.call_pool[i]);
             }
         }
 
         // if the algorithm abandons calls with not feasible deadline
-        if (this.algorithm.abandonsNotFeasible === true){
+        if (this.algorithm.realTime === true && this.algorithm.abandonNotFeasible === true){
             // remove from the queue and count as not satisfied
             for (let i = 0; i < this.call_queue.length; i++){
                 if (!(this.call_queue[i] instanceof RealTimeReadCall))
@@ -106,14 +111,13 @@ export default class Disk {
                 continue;
 
             if (this.call_queue[i].position == this.head_position) {
-                if (!this.algorithm.readOnFly && this.nextTarget != null)
+                if (!this.algorithm.readOnFly)
                     this.nextTarget = null;
 
                 this.call_queue[i].evaluate(this.time);
                 this.call_finished.push(this.call_queue.splice(i, 1)[0]);
                 
                 const doMoreThanOnePerTick = true;
-
                 if (!doMoreThanOnePerTick)
                     break;
                 else
@@ -125,6 +129,13 @@ export default class Disk {
          * Only moving the disk head takes time
          */
         this.time += Math.abs(delta);
+        /**
+         * Except when the queue is empty
+         *  - then the disk waits for a call
+         *  - so the time is incremented by 1
+         */
+        if (this.call_queue.length == 0 && Math.abs(delta) == 0)
+            this.time++;
     }
 
     isFinished(): boolean {

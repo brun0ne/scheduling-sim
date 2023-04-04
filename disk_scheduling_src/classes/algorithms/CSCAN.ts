@@ -2,6 +2,9 @@ import AccessAlgorithm from "../AccessAlgorithm";
 import DeltaToTargetAlgorithm from "../DeltaToTargetAlgorithm";
 import ReadCall from "../ReadCall";
 
+/**
+ * C-SCAN (Circular SCAN)
+ */
 export default class CSCAN extends DeltaToTargetAlgorithm implements AccessAlgorithm {
     name: string = "CSCAN"
     readOnFly: boolean = true

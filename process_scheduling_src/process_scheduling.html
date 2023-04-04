@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Process Scheduling</title>
-
-        <meta charset="utf-8">
-
         <link rel="stylesheet" href="../shared/shared.css">
         <link rel="stylesheet" href="style.css">
 
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta name="title" content="Process Scheduling Simulator">
+        <meta name="description" content="Explore process scheduling algorithms such as FCFS, SJF, SRTF, and RR.">
+        <meta name="keywords" content="scheduling, simulator, simulation, CPU, processor, FCFS, SJF, SRTF, RR, SSTF, SCAN, C-SCAN, EDF, FD-SCAN, real-time, performance comparison, code, programming, IT">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+        <meta name="author" content="Brunon Blok">
     </head>
     <body>
         <canvas id="main_canvas" width="800" height="600"></canvas>
@@ -17,6 +19,10 @@
             <div id="results_header">Results</div>
             <div id="results"></div>
             <button id="results_close">Close</button>
+        </div>
+
+        <div id="footer">
+            <a href="https://github.com/brun0ne/scheduling-sim" target="_blank" style="position: absolute; z-index: 5" title="See repository">github</a>
         </div>
 
         <div id="animation_gui">
@@ -61,6 +67,10 @@
         </div>
 
         <div id="settings">
+            <div id="home_button" title="Go back">
+                <i class="fa fa-arrow-left" onclick="window.location = '../index.html'" style="cursor: pointer"></i>
+            </div>
+
             <h2 style="color: yellow;">Process Scheduling Simulator</h2>
             
             <div id="settings_processes" class="settings_list">

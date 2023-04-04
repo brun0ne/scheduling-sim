@@ -18,7 +18,7 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
     readOnFly: boolean = true
     realTime: boolean = true
 
-    abandonsNotFeasible: boolean = true
+    abandonNotFeasible: boolean = true
 
     nextRealTimeTarget: ReadCall = null
 

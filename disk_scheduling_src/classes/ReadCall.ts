@@ -1,4 +1,5 @@
 export default class ReadCall {
+    joined: boolean
     position: number
     appearance_time: number
     
@@ -9,6 +10,8 @@ export default class ReadCall {
         this.appearance_time = appearance_time;
 
         this.absolute_deadline = 0;
+        
+        this.joined = false;
     }
 
     evaluate(current_time?: number): void{}
