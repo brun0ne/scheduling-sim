@@ -53,7 +53,7 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
         return this.nextRealTimeTarget;
     }
     
-    override getDelta(head_position: number, call_queue: ReadCall[], max_position: number): number {
+    override getDelta(head_position: number, call_queue: ReadCall[], max_position: number, current_time: number, currentTarget: ReadCall): number {
         /**
          * remove the target if it has been reached
          */
@@ -66,6 +66,6 @@ export default class FDSCAN extends DeltaToTargetAlgorithm implements AccessAlgo
         if (this.nextRealTimeTarget == null)
             return this.inner_SCAN.getDelta(head_position, call_queue, max_position);
 
-        return super.getDelta(head_position, call_queue, max_position);
+        return super.getDelta(head_position, call_queue, max_position, current_time, currentTarget);
     }
 }
