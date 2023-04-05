@@ -1,6 +1,9 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
+/**
+ * FCFS (First Come First Serve)
+ */
 export default class FCFS implements AccessAlgorithm {
     name: string = "FCFS"
 

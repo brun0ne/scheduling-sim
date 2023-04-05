@@ -125,6 +125,12 @@ export default class Menu {
             this.display.setResizeCallback(() => { this.refreshProcesses() });
         });
 
+        const see_code_button = document.getElementById("code_button");
+        see_code_button.addEventListener("click", () => {
+            const algorithmName = this.scheduler.algorithm.name;
+            window.open(`https://github.com/brun0ne/scheduling-sim/blob/main/process_scheduling_src/classes/algorithms/${algorithmName}.ts`, "_blank").focus();
+        });
+
         /* speed control slider */
         const speed_slider = document.getElementById("animation_speed_slider");
         speed_slider.addEventListener("input", (e: Event) => {

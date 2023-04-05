@@ -1,6 +1,9 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
+/**
+ * SJF (Shortest Job First)
+ */
 export default class SJF implements AccessAlgorithm {
     name: string = "SJF"
 

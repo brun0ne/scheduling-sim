@@ -96,6 +96,20 @@ a:visited {
     text-decoration: none;
 }
 
+.code-btn {
+    opacity: 50%;
+    font-size: 90%;
+
+    transition: 0.5s;
+}
+
+.code-btn:hover {
+    opacity: 100%;
+    cursor: pointer;
+
+    transition: 0.5s;
+}
+
 #footer {
     position: absolute;
     bottom: 0;

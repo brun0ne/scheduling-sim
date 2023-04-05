@@ -1,6 +1,9 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
+/**
+ * RR (Round Robin)
+ */
 export default class RR implements AccessAlgorithm {
     quantum: number
 

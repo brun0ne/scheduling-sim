@@ -4,13 +4,17 @@
         <link rel="stylesheet" href="../shared/shared.css">
         <link rel="stylesheet" href="style.css">
 
+        <title>Process Scheduling Simulator</title>
+
+        <!-- free open source icon from https://iconduck.com/sets/magicons-flat-icon-set, designed by Darius Dan, iconPerk -->
+        <link rel="icon" type="image/png" href="../shared/icon.svg">
+
         <meta name="title" content="Process Scheduling Simulator">
         <meta name="description" content="Explore process scheduling algorithms such as FCFS, SJF, SRTF, and RR.">
         <meta name="keywords" content="scheduling, simulator, simulation, CPU, processor, FCFS, SJF, SRTF, RR, SSTF, SCAN, C-SCAN, EDF, FD-SCAN, real-time, performance comparison, code, programming, IT">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="language" content="English">
-        <meta name="author" content="Brunon Blok">
     </head>
     <body>
         <canvas id="main_canvas" width="800" height="600"></canvas>
@@ -34,7 +38,7 @@
 
             <div id="animation_info">
                 <div id="animation_info_algorithm">
-                    <span>Algorithm: </span><span id="animation_info_algorithm_value"></span><span id="animation_info_algorithm_value_extra"></span>
+                    <span>Algorithm: </span><span id="animation_info_algorithm_value"></span><span id="animation_info_algorithm_value_extra"></span> <i id="code_button" title="Code" class="fa fa-search code-btn"></i>
                 </div>
                 <div id="animation_info_time">
                     <span>Time: </span><span id="animation_info_time_value"></span>

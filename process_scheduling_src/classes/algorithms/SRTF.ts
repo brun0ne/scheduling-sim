@@ -1,6 +1,9 @@
 import AccessAlgorithm from "../AccessAlgorithm";
 import Process from "../Process";
 
+/**
+ * SRTF (Shortest Remaining Time First)
+ */
 export default class SRTF implements AccessAlgorithm {
     name: string = "SRTF"
 
