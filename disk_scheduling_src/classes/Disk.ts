@@ -67,7 +67,7 @@ export default class Disk {
     nextTick(): void {
         // add calls to queue
         for (let i = 0; i < this.call_pool.length; i++) {
-            if (this.call_pool[i].appearance_time == this.time && this.call_pool[i].joined == false) {
+            if (this.call_pool[i].appearance_time <= this.time && this.call_pool[i].joined == false) {
                 this.call_pool[i].joined = true;
                 this.call_queue.push(this.call_pool[i]);
             }
