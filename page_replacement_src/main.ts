@@ -1,6 +1,11 @@
 import Memory from "./classes/Memory";
 import Page from "./classes/Page";
+
 import FIFO from "./classes/algorithms/FIFO";
+import OPT from "./classes/algorithms/OPT";
+import LRU from "./classes/algorithms/LRU";
+import ALRU from "./classes/algorithms/ALRU";
+import RAND from "./classes/algorithms/RAND";
 
 function main() {
     if (typeof document !== "undefined") {
@@ -14,21 +19,8 @@ function main() {
 
         const memory = new Memory();
         memory.init(5, 3);
-
-        memory.addPageCallToPool(new Page(1));
-        memory.addPageCallToPool(new Page(2));
-        memory.addPageCallToPool(new Page(3));
-        memory.addPageCallToPool(new Page(4));
-        memory.addPageCallToPool(new Page(1));
-        memory.addPageCallToPool(new Page(2));
-        memory.addPageCallToPool(new Page(5));
-        memory.addPageCallToPool(new Page(1));
-        memory.addPageCallToPool(new Page(2));
-        memory.addPageCallToPool(new Page(3));
-        memory.addPageCallToPool(new Page(4));
-        memory.addPageCallToPool(new Page(5));
-
-        memory.setAlgorithm(new FIFO());
+        memory.addPageCallsToPool([1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]);
+        memory.setAlgorithm(new ALRU());
         
         while (memory.page_calls.length > 0) {
             memory.nextTick();

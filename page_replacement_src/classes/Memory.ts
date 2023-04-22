@@ -7,6 +7,7 @@ export default class Memory {
     number_of_frames: number = 0
 
     page_calls: Array<Page> = []
+    previous_page_calls: Array<Page> = []
     frames: Array<Frame> = []
 
     algorithm: ReplacementAlgorithm | null = null
@@ -25,6 +26,7 @@ export default class Memory {
         this.number_of_frames = number_of_frames;
 
         this.frames = [];
+        this.previous_page_calls = [];
 
         this.time = 0;
         this.total_page_faults = 0;
@@ -38,6 +40,12 @@ export default class Memory {
         this.page_calls.push(page_call);
     }
 
+    addPageCallsToPool(page_calls: Array<number>) {
+        for (let i = 0; i < page_calls.length; i++) {
+            this.page_calls.push(new Page(page_calls[i]));
+        }
+    }
+
     clearPageCallPool(): void {
         this.page_calls = [];
     }
@@ -47,19 +55,28 @@ export default class Memory {
     }
 
     nextTick(): void {
+        /* ensure that an algorithm is selected */
+        if (this.algorithm == null) {
+            throw new Error("No algorithm selected");
+        }
+
         const page_call = this.page_calls.shift();
 
         /* no page call at this time */
         if (page_call == null) {
+            console.warn("Empty page call queue but not finished");
             this.time++;
             return;
         }
-
+        
+        this.previous_page_calls.push(page_call);
         console.log("Page call: " + page_call.id);
 
         if (page_call) {
-            let page_fault = true;
+            this.algorithm.onPageCall?.(page_call);
 
+            /* check if there is a page fault */
+            let page_fault = true;
             for (let i = 0; i < this.frames.length; i++) {
                 if (this.frames[i] == null)
                     throw new Error("Frame is null");
@@ -75,6 +92,8 @@ export default class Memory {
 
                 if ((<Page> this.frames[i].page).id == page_call.id) {
                     /* page is already in memory */
+                    this.algorithm.onPageAlreadyInMemory?.(page_call);
+
                     page_fault = false;
                     break;
                 }
@@ -89,16 +108,11 @@ export default class Memory {
                     throw new Error("Initial page fill not handled properly");
                 }
 
-                /* ensure that an algorithm is selected */
-                if (this.algorithm == null) {
-                    throw new Error("No algorithm selected");
-                }
-
                 /* increment the total page faults */
                 this.total_page_faults++;
 
                 /* replace a page */
-                const index_to_replace = this.algorithm.handlePageFault(page_call, this.last_replaced_index, this.frames, this.page_calls);
+                const index_to_replace = this.algorithm.handlePageFault(page_call, this.last_replaced_index, this.frames, this.page_calls, this.previous_page_calls);
                 this.frames[index_to_replace].page = page_call;
 
                 this.last_replaced_index = index_to_replace;
