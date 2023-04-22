@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../shared/shared.css">
+        <link rel="stylesheet" href="style.css">
+
+        <title>Page Replacement Simulator</title>
+
+        <!-- free open source icon from https://iconduck.com/sets/magicons-flat-icon-set, designed by Darius Dan, iconPerk -->
+        <link rel="icon" type="image/png" href="../shared/icon.svg">
+
+        <meta name="title" content="Page Replacement Simulator">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="800" height="600"></canvas>
+
+        <div id="results_wrapper">
+            <div id="results_header">Results</div>
+            <div id="results"></div>
+            <button id="results_close">Close</button>
+        </div>
+
+        <div id="footer">
+            <a href="https://github.com/brun0ne/scheduling-sim" target="_blank" style="position: absolute; z-index: 5" title="See repository">github</a>
+        </div>
+
+        <div id="settings">
+            <div id="home_button" title="Go back">
+                <i class="fa fa-arrow-left" onclick="window.location = '../index.html'" style="cursor: pointer"></i>
+            </div>
+
+            <h2 style="color: yellow">Page Replacement Simulator</h2>
+
+            <div id="settings_calls" class="settings_list">
+                <h2 style="vertical-align: middle">Settings</h2>
+                <div>
+                    <label for="s_page_count">Page count</label>
+                    <input id="s_page_count" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="s_frame_count">Frame count</label>
+                    <input id="s_frame_count" type="text" value="3" autocomplete="off"/>
+                </div>
+                <h2 style="vertical-align: middle">Page calls <span id="p_current_count">(0)</span> <span id="clear_button">[clear]</span></h2>
+                <div>
+                    <label for="c_distribution">Distribution</label>
+                    <select id="c_distribution" autocomplete="off">
+                        <option value="uniform">Uniform</option>
+                        <option value="normal">Real-life</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="c_count">Count</label>
+                    <input id="c_count" type="text" value="100" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div id="add" style="margin-top: 2%;">
+                <button id="add_button">Add</button>
+            </div>
+
+            <div id="settings_algorithm">
+                <h2>Algorithm</h2>
+                <div>
+                    <label for="a_type">Type</label>
+                    <select id="a_type" autocomplete="off" style="width: 50%">
+                        <option value="fifo">FIFO</option>
+                        <option value="opt">OPT</option>
+                        <option value="lru">LRU</option>
+                        <option value="alru">Aproximate LRU</option>
+                        <option value="rand">RAND</option>
+                        <option value="compare_all">compare all</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="run" style="margin-top: 2%">
+                <button id="run_button">Run</button>
+                <button id="run_with_animation_button">Run with animation</button>
+            </div>
+
+            <div id="current_page_calls">
+                Page call queue: [<span id="current_page_calls_val"></span>]
+            </div>
+        </div>
+
+        <div id="animation_gui"></div>
+
+        <script src="main-bundle.js"></script>
+    </body>
+</html>

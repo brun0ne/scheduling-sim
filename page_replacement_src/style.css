@@ -1,0 +1,13 @@
+#current_page_calls {
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    overflow: auto;
+
+    position: fixed;
+    top: 5%;
+    right: 5%;
+
+    width: 45%;
+    height: 75%;
+}

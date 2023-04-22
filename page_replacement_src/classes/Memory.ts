@@ -1,13 +1,19 @@
 import Page from "./Page"
 import Frame from "./Frame"
-import ReplacementAlgorithm from "./ReplacementAlgorithm"
+import ReplacementAlgorithm, { MemoryStateData } from "./ReplacementAlgorithm"
+
+type results = {
+    total_page_faults: number
+}
 
 export default class Memory {
     number_of_pages: number = 0
     number_of_frames: number = 0
 
-    page_calls: Array<Page> = []
+    page_call_pool: Array<Page> = []
+    page_call_queue: Array<Page> = []
     previous_page_calls: Array<Page> = []
+
     frames: Array<Frame> = []
 
     algorithm: ReplacementAlgorithm | null = null
@@ -21,10 +27,11 @@ export default class Memory {
         this.total_page_faults = 0;
     }
 
-    init(number_of_pages: number, number_of_frames: number): void {
-        this.number_of_pages = number_of_pages;
-        this.number_of_frames = number_of_frames;
+    init(number_of_pages?: number, number_of_frames?: number): void {
+        this.number_of_pages = number_of_pages ?? this.number_of_pages;
+        this.number_of_frames = number_of_frames ?? this.number_of_frames;
 
+        this.page_call_queue = [...this.page_call_pool]; // copy array
         this.frames = [];
         this.previous_page_calls = [];
 
@@ -37,17 +44,17 @@ export default class Memory {
     }
 
     addPageCallToPool(page_call: Page): void {
-        this.page_calls.push(page_call);
+        this.page_call_pool.push(page_call);
     }
 
     addPageCallsToPool(page_calls: Array<number>) {
         for (let i = 0; i < page_calls.length; i++) {
-            this.page_calls.push(new Page(page_calls[i]));
+            this.page_call_pool.push(new Page(page_calls[i]));
         }
     }
 
     clearPageCallPool(): void {
-        this.page_calls = [];
+        this.page_call_pool = [];
     }
 
     setAlgorithm(algorithm: ReplacementAlgorithm): void {
@@ -60,7 +67,7 @@ export default class Memory {
             throw new Error("No algorithm selected");
         }
 
-        const page_call = this.page_calls.shift();
+        const page_call = this.page_call_queue.shift();
 
         /* no page call at this time */
         if (page_call == null) {
@@ -86,7 +93,10 @@ export default class Memory {
                     this.frames[i].page = page_call;
                     this.last_replaced_index = i;
 
-                    page_fault = false;
+                    /* increment the total page faults */
+                    this.total_page_faults++;
+
+                    page_fault = false; // page fault already handled
                     break;
                 }
 
@@ -112,7 +122,14 @@ export default class Memory {
                 this.total_page_faults++;
 
                 /* replace a page */
-                const index_to_replace = this.algorithm.handlePageFault(page_call, this.last_replaced_index, this.frames, this.page_calls, this.previous_page_calls);
+                const data: MemoryStateData = {
+                    page_call: page_call,
+                    last_replaced_index: this.last_replaced_index,
+                    current_frames: this.frames,
+                    future_page_calls: this.page_call_queue,
+                    previous_page_calls: this.previous_page_calls
+                };
+                const index_to_replace = this.algorithm.handlePageFault(data);
                 this.frames[index_to_replace].page = page_call;
 
                 this.last_replaced_index = index_to_replace;
@@ -139,13 +156,58 @@ export default class Memory {
         }
 
         this.time++;
-        this.displayFrames();
     }
 
-    displayFrames(): void {
+    simulate(): results {
+        this.init();
+
+        while (this.page_call_queue.length > 0) {
+            this.nextTick();
+        }
+
+        return { total_page_faults:  this.total_page_faults };
+    }
+
+    /**
+     * visualization & output
+     */
+
+    printFrames(): void {
         console.log("Frames:");
         for (const frame of this.frames) {
             console.log(frame.page ? frame.page.id : "null");
+        }
+    }
+
+    displayResults(results: results, algStr: string = (<Algorithm> this.algorithm).name): void {
+        const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results") as HTMLElement;
+        results_el.innerHTML = `
+        Algorithm: ${algStr.toUpperCase()}
+
+        Total page faults: ${results.total_page_faults.toFixed(0)}
+        `.replace(RegExp("\n", "g"), "<br />");
+    }
+
+    compareAllAndDisplayResults(algorithms: Array<ReplacementAlgorithm>): void {
+        const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results") as HTMLElement;
+        results_el.innerHTML = "";
+
+        for (let i = 0; i < algorithms.length; i++) {
+            this.setAlgorithm(algorithms[i]);
+            const results: results = this.simulate();
+
+            results_el.innerHTML += `
+            Algorithm: ${algorithms[i].name.toUpperCase()}
+            Total page faults: ${results.total_page_faults}
+            `.replace(RegExp("\n", "g"), "<br />");
+
+            results_el.innerHTML += "<br />";
         }
     }
 }

@@ -1,3 +1,5 @@
+import Menu from "./classes/Menu";
+
 import Memory from "./classes/Memory";
 import Page from "./classes/Page";
 
@@ -9,8 +11,8 @@ import RAND from "./classes/algorithms/RAND";
 
 function main() {
     if (typeof document !== "undefined") {
-        // const menu = new Menu();
-        // menu.init();
+        const menu = new Menu();
+        menu.init();
     }
     else {
         /*
@@ -22,8 +24,9 @@ function main() {
         memory.addPageCallsToPool([1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]);
         memory.setAlgorithm(new ALRU());
         
-        while (memory.page_calls.length > 0) {
+        while (memory.page_call_queue.length > 0) {
             memory.nextTick();
+            memory.printFrames();
         }
 
         console.log("Total page faults: " + memory.total_page_faults);

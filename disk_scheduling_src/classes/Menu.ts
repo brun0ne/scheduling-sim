@@ -1,6 +1,8 @@
 import { Random } from "random-js";
 import gaussian from "gaussian";
 
+import IMenu from "../../shared/interfaces/IMenu";
+
 import Display from "../../shared/classes/Display";
 
 import Disk from "./Disk";
@@ -18,7 +20,7 @@ import AnimationGUI from "./AnimationGUI";
 
 const random = new Random();
 
-export default class Menu {
+export default class Menu implements IMenu {
     display: Display
     disk: Disk
     animationGUI: AnimationGUI

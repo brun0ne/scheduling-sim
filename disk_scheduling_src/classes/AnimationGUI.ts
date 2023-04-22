@@ -1,7 +1,9 @@
 import Menu from "./Menu";
 import ReadCall from "./ReadCall";
 
-export default class AnimationGUI {
+import IAnimationGUI from "../../shared/interfaces/IAnimationGUI";
+
+export default class AnimationGUI implements IAnimationGUI {
     menu: Menu
     visible: boolean = false
     playing: boolean = false
