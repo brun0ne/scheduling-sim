@@ -2,7 +2,7 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
 html, body {
-    background: black;
+    background: #010409;
 
     margin: 0;
     width: 100%;
@@ -20,7 +20,7 @@ h1, h2, h3, h4{
 }
 
 input {
-    background: black;
+    background: #0d1117;
     color: white;
     border: 1px solid white;
     border-radius: 5px;
@@ -32,7 +32,7 @@ input {
 }
 
 select {
-    background: black;
+    background: #0d1117;
     color: white;
     border: 1px solid white;
     border-radius: 5px;
@@ -50,7 +50,7 @@ label {
 }
 
 button {
-    background: black;
+    background: #0d1117;
     color: white;
     border: 1px solid white;
     padding: 10px;
@@ -61,16 +61,16 @@ button {
 
 button:hover{
     background: white;
-    color: black;
-    border: 1px solid black;
+    color: #0d1117;
+    border: 1px solid #0d1117;
 
     cursor: pointer;
 }
 
 button:disabled {
     background: grey;
-    color: black;
-    border: 1px solid black;
+    color: #0d1117;
+    border: 1px solid #0d1117;
 }
 
 a {
