@@ -6,7 +6,10 @@ type results = {
     total_page_faults: number
 }
 
-export default class Memory {
+/**
+ * Memory Management Unit
+ */
+export default class MMU {
     number_of_pages: number = 0
     number_of_frames: number = 0
 

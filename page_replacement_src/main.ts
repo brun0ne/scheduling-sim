@@ -1,6 +1,6 @@
 import Menu from "./classes/Menu";
 
-import Memory from "./classes/Memory";
+import MMU from "./classes/MMU";
 import Page from "./classes/Page";
 
 import FIFO from "./classes/algorithms/FIFO";
@@ -19,7 +19,7 @@ function main() {
         * run with: tsc && node .\dist\page_replacement_src\main.js
         */
 
-        const memory = new Memory();
+        const memory = new MMU();
         memory.init(5, 3);
         memory.addPageCallsToPool([1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]);
         memory.setAlgorithm(new ALRU());

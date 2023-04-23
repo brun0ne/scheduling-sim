@@ -52,12 +52,20 @@
                     <label for="c_distribution">Distribution</label>
                     <select id="c_distribution" autocomplete="off">
                         <option value="uniform">Uniform</option>
-                        <option value="normal">Real-life</option>
+                        <option value="locality">With locality</option>
                     </select>
                 </div>
                 <div>
                     <label for="c_count">Count</label>
                     <input id="c_count" type="text" value="100" autocomplete="off"/>
+                </div>
+                <div id="c_window_size_all" style="display: none">
+                    <label for="c_window_size" style="color: yellow">Window size</label>
+                    <input id="c_window_size" type="text" value="4" autocomplete="off"/>
+                </div>
+                <div id="c_window_delta_all" style="display: none">
+                    <label for="c_window_delta" style="color: yellow">Max window delta</label>
+                    <input id="c_window_delta" type="text" value="1" autocomplete="off"/>
                 </div>
             </div>
 

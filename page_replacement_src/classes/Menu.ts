@@ -2,7 +2,7 @@ import IMenu from "../../shared/interfaces/IMenu";
 import Display from "../../shared/classes/Display";
 
 import AnimationGUI from "./AnimationGUI";
-import Memory from "./Memory";
+import MMU from "./MMU";
 import Page from "./Page";
 
 import FIFO from "./algorithms/FIFO";
@@ -13,12 +13,12 @@ import RAND from "./algorithms/RAND";
 
 export default class Menu implements IMenu {
     display: Display
-    memory: Memory
+    memory: MMU
     animationGUI: AnimationGUI
 
     constructor() {
         this.display = new Display();
-        this.memory = new Memory();
+        this.memory = new MMU();
 
         this.animationGUI = new AnimationGUI(this);
     }
@@ -49,15 +49,60 @@ export default class Menu implements IMenu {
          */
         const number_of_pages = document.getElementById("s_page_count") as HTMLInputElement;
         number_of_pages.addEventListener("change", (e: Event) => {
-            this.memory.init((<HTMLInputElement> e.target).valueAsNumber, this.memory.number_of_frames);
+            const new_val = parseInt((<HTMLInputElement> e.target).value);
+
+            if (isNaN(new_val) || new_val < 1) {
+                alert("Invalid number of pages");
+                return;
+            }
+
+            this.memory.init(new_val, this.memory.number_of_frames);
             this.clearCalls();
             this.refreshCalls();
         });
 
         const number_of_frames = document.getElementById("s_frame_count") as HTMLInputElement;
         number_of_frames.addEventListener("change", (e: Event) => {
-            this.memory.init(this.memory.number_of_pages, (<HTMLInputElement> e.target).valueAsNumber);
+            const new_val = parseInt((<HTMLInputElement> e.target).value);
+
+            if (isNaN(new_val) || new_val < 1) {
+                alert("Invalid number of frames");
+                return;
+            }
+
+            this.memory.init(this.memory.number_of_pages, new_val);
             this.refreshCalls();
+        });
+
+        /**
+         * distribution select
+         * -> show/hide specific options
+         */
+        const distribution_select = document.getElementById("c_distribution") as HTMLSelectElement;
+        distribution_select.addEventListener("change", (e: Event) => {
+            const distribution = (<HTMLSelectElement> e.target).value.toLowerCase();
+            
+            const window_size_el = document.getElementById("c_window_size_all") as HTMLDivElement;
+            const window_delta_el = document.getElementById("c_window_delta_all") as HTMLDivElement;
+
+            switch (distribution) {
+                case "uniform":
+                {
+                    window_size_el.style.display = "none";
+                    window_delta_el.style.display = "none";
+                    break;
+                }
+                case "locality":
+                {
+                    window_size_el.style.display = "block";
+                    window_delta_el.style.display = "block";
+                    break;
+                }
+                default:
+                {
+                    alert("Invalid distribution");
+                }
+            }
         });
 
         /**
@@ -99,13 +144,53 @@ export default class Menu implements IMenu {
         switch (distribution) {
             case "uniform":
             {
+                /* generate calls */
                 for (let i = 0; i < call_count; i++)
                 {
                     this.memory.addPageCallsToPool([Math.floor(Math.random() * this.memory.number_of_pages)]);
                 }
+                break;
             }
-            case "real-life":
+            case "locality":
             {
+                const window_size = parseInt((<HTMLInputElement> document.getElementById("c_window_size")).value);
+                const window_delta = parseInt((<HTMLInputElement> document.getElementById("c_window_delta")).value);
+
+                /* validate input */
+                if (isNaN(window_size) || isNaN(window_delta)) {
+                    alert("Invalid input");
+                    return;
+                }
+                if (window_size > this.memory.number_of_pages) {
+                    alert("Window size is bigger than number of pages");
+                    return;
+                }
+                if (window_delta > this.memory.number_of_pages) {
+                    alert("Window delta is bigger than number of pages");
+                    return;
+                }
+
+                /* generate calls */
+                let window_start = Math.floor(Math.random() * (this.memory.number_of_pages - window_size));
+                for(let i = 0; i < call_count; i++) {
+                    const page_id = Math.floor(Math.random() * window_size) + window_start;
+                    this.memory.addPageCallsToPool([page_id]);
+
+                    /* move window by delta in range [-window_delta, window_delta] */
+                    const delta = Math.floor(Math.random() * (window_delta * 2 + 1)) - window_delta;
+                    window_start = (window_start + delta) % (this.memory.number_of_pages - window_size);
+
+                    /* avoid 0 % 0 */
+                    if (this.memory.number_of_pages - window_size === 0) {
+                        window_start = 0;
+                    }
+
+                    /* make sure window_start is in range [0, number_of_pages - window_size] */
+                    if (window_start < 0) {
+                        window_start += this.memory.number_of_pages;
+                    }
+                }
+
                 break;
             }
             default:
