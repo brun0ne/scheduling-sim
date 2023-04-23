@@ -25,7 +25,7 @@
 - RAND (random)
 
 ### Installation
-If you want to build it yourself, run:
+Install [NodeJS](https://nodejs.org/en) (tested on v18.15.0). Run:
 ```bash
 $ git clone https://github.com/brun0ne/scheduling-sim
 ```
