@@ -40,8 +40,9 @@ export default class Menu implements IMenu {
          * init 
          * set callback for resize
          */
+        this.memory.init(5, 3);
         this.display.init("main_canvas");
-        // this.animationGUI.init();
+        this.animationGUI.init();
         this.display.setResizeCallback(() => { this.refreshCalls() });
 
         /** 
@@ -133,7 +134,6 @@ export default class Menu implements IMenu {
         /*
          * refresh calls 
          */
-        this.memory.init(5, 3);
         this.refreshCalls();
     } 
 
@@ -277,7 +277,6 @@ export default class Menu implements IMenu {
         }
 
         if (animation) {
-            alert("Not implemented yet");
             this.animationGUI.startAnimation();
         }
         else {

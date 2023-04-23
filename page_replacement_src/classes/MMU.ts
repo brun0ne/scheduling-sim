@@ -3,7 +3,9 @@ import Frame from "./Frame"
 import ReplacementAlgorithm, { MemoryStateData } from "./ReplacementAlgorithm"
 
 type results = {
-    total_page_faults: number
+    total_page_faults: number,
+    total_page_hits: number,
+    total_page_calls: number
 }
 
 /**
@@ -24,6 +26,8 @@ export default class MMU {
 
     total_page_faults: number
     time: number
+
+    last_call_caused_fault: boolean = false
 
     constructor() {
         this.time = 0;
@@ -98,6 +102,7 @@ export default class MMU {
 
                     /* increment the total page faults */
                     this.total_page_faults++;
+                    this.last_call_caused_fault = true;
 
                     page_fault = false; // page fault already handled
                     break;
@@ -107,6 +112,7 @@ export default class MMU {
                     /* page is already in memory */
                     this.algorithm.onPageAlreadyInMemory?.(page_call);
 
+                    this.last_call_caused_fault = false;
                     page_fault = false;
                     break;
                 }
@@ -123,6 +129,7 @@ export default class MMU {
 
                 /* increment the total page faults */
                 this.total_page_faults++;
+                this.last_call_caused_fault = true;
 
                 /* replace a page */
                 const data: MemoryStateData = {
@@ -161,14 +168,26 @@ export default class MMU {
         this.time++;
     }
 
+    isFinished(): boolean {
+        return this.page_call_queue.length == 0;
+    }
+
     simulate(): results {
         this.init();
 
-        while (this.page_call_queue.length > 0) {
+        while (!this.isFinished()) {
             this.nextTick();
         }
 
-        return { total_page_faults:  this.total_page_faults };
+        return this.getResults();
+    }
+
+    getResults(): results {
+        return {
+            total_page_faults: this.total_page_faults,
+            total_page_hits: this.previous_page_calls.length - this.total_page_faults,
+            total_page_calls: this.previous_page_calls.length
+        };
     }
 
     /**
@@ -190,7 +209,9 @@ export default class MMU {
         results_el.innerHTML = `
         Algorithm: ${algStr.toUpperCase()}
 
-        Total page faults: ${results.total_page_faults.toFixed(0)}
+        Total page faults: <b style='color: red'>${results.total_page_faults.toFixed(0)}</b>
+        Total page hits: <b style='color: lime'>${results.total_page_hits.toFixed(0)}</b>
+        Total page calls: <b>${results.total_page_calls.toFixed(0)}</b>
         `.replace(RegExp("\n", "g"), "<br />");
     }
 
@@ -207,7 +228,9 @@ export default class MMU {
 
             results_el.innerHTML += `
             Algorithm: ${algorithms[i].name.toUpperCase()}
-            Total page faults: ${results.total_page_faults}
+            Total page faults: <b style='color: red'>${results.total_page_faults.toFixed(0)}</b>
+            Total page hits: <b style='color: lime'>${results.total_page_hits.toFixed(0)}</b>
+            Total page calls: <b>${results.total_page_calls.toFixed(0)}</b>
             `.replace(RegExp("\n", "g"), "<br />");
 
             results_el.innerHTML += "<br />";

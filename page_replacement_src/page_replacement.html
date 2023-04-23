@@ -98,7 +98,62 @@
             </div>
         </div>
 
-        <div id="animation_gui"></div>
+        <div id="animation_gui">
+            <div id="legend">
+                <span style="color: red">red</span> - page fault<br />
+            </div>
+
+            <div id="calls_info" class="other_info">
+                <div id="calls_in_queue">
+                    <span>Calls in the queue: </span><span id="calls_in_queue_value"></span>
+                </div>
+                <div id="calls_finished">
+                    <span>Calls finished: </span><span id="calls_finished_value"></span>
+                </div>
+                <div id="total_page_hits">
+                    <span>Total page hits: </span><span style="color: lime" id="total_page_hits_value"></span>
+                </div>  
+                <div id="total_page_faults">
+                    <span>Total page faults: </span><span style="color: red" id="total_page_faults_value"></span>
+                </div>  
+            </div>
+
+            <div id="animation_info">
+                <div id="animation_info_algorithm">
+                    <span>Algorithm: </span><span id="animation_info_algorithm_value"></span> <i id="code_button" title="Code" class="fa fa-search code-btn"></i>
+                </div>
+                <div id="animation_info_time">
+                    <span>Time: </span><span id="animation_info_time_value"></span>
+                </div> 
+                <div id="animation_is_done" style="color: lime; display: none">
+                    <span>Done!</span>
+                </div>
+            </div>
+
+            <div id="animation_controls">
+                <!-- speed slider -->
+                <div id="animation_speed">
+                    <label for="animation_speed_slider">Speed (ticks/s)</label>
+                    <input id="animation_speed_slider" type="range" min="1" max="101" value="1" step="5" autocomplete="off"/>
+                </div>
+
+                <button id="animation_play_pause">Play</button>
+                <button id="animation_stop">Stop</button>
+                <button id="animation_step">Step</button>
+            </div>
+
+            <div id="animation_call_table">
+                <!-- Table with colums representing next states as time passes, and a row for each frame -->
+                <table class="tg">
+                    <thead>
+                        <tr id="animation_table_time"></tr>
+                    </thead>
+                    <tbody id="animation_table_body">
+                        <tr id="animation_table_page_calls"></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <script src="main-bundle.js"></script>
     </body>
