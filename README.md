@@ -1,6 +1,8 @@
 # Scheduling Simulator
  Visual scheduling simulator.
 
+### [Click to open the app](https://brun0ne.github.io/scheduling-sim/)
+
 ### Process scheduling algorithms:
 - FCFS (first come first serve)
 - SJF (shortest job first)
@@ -15,7 +17,12 @@
 - EDF (earliest deadline first) - *real time*
 - FD-SCAN (feasible deadline SCAN) - *real time*
 
-[Click to open the app](https://brun0ne.github.io/scheduling-sim/)
+### Page replacement algorithms:
+- FIFO (first in first out)
+- OPT (optimal)
+- LRU (least recently used)
+- ALRU (approximate least recently used / second chance)
+- RAND (random)
 
 ### Installation
 If you want to build it yourself, run:
