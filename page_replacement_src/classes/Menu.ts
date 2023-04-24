@@ -176,9 +176,18 @@ export default class Menu implements IMenu {
                     const page_id = Math.floor(Math.random() * window_size) + window_start;
                     this.memory.addPageCallsToPool([page_id]);
 
+                    const DEBUG = false;
+                    if (DEBUG)
+                        console.log({
+                            window_start: window_start,
+                            window_size: window_size,
+                            page_id: page_id,
+                            window_delta: window_delta
+                        });
+
                     /* move window by delta in range [-window_delta, window_delta] */
                     const delta = Math.floor(Math.random() * (window_delta * 2 + 1)) - window_delta;
-                    window_start = (window_start + delta) % (this.memory.number_of_pages - window_size);
+                    window_start = (window_start + delta) % (this.memory.number_of_pages - window_size + 1);
 
                     /* avoid 0 % 0 */
                     if (this.memory.number_of_pages - window_size === 0) {
@@ -187,7 +196,7 @@ export default class Menu implements IMenu {
 
                     /* make sure window_start is in range [0, number_of_pages - window_size] */
                     if (window_start < 0) {
-                        window_start += this.memory.number_of_pages;
+                        window_start += this.memory.number_of_pages - window_size + 1;
                     }
                 }
 
