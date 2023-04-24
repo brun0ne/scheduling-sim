@@ -1,6 +1,8 @@
 import IAnimationGUI from "../../shared/interfaces/IAnimationGUI";
 import Menu from "./Menu";
 
+import ALRU from "./algorithms/ALRU";
+
 export default class AnimationGUI implements IAnimationGUI {
     menu: Menu
 
@@ -256,6 +258,12 @@ export default class AnimationGUI implements IAnimationGUI {
 
                 const frameTickEl = document.createElement("th");
                 frameTickEl.innerHTML = `${page != null ? page.id : ""}`;
+
+                // append special bit in case of ALRU
+                if (this.menu.memory.algorithm instanceof ALRU) {
+                    const bit = (<ALRU> this.menu.memory.algorithm).bit_array[i];
+                    frameTickEl.innerHTML += ` <span style='color: yellow; font-size: 80%'>(${bit ? 1 : 0})</span>`;
+                }
 
                 // make page faults red
                 if (page != null && page.id == newCall.id && this.menu.memory.last_call_caused_fault) {
