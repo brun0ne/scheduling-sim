@@ -87,7 +87,7 @@ export default class MMU {
         console.log("Page call: " + page_call.id);
 
         if (page_call) {
-            this.algorithm.onPageCall?.(page_call);
+            this.algorithm.onPageCall?.(this.getCurrentStateData(page_call));
 
             /* check if there is a page fault */
             let page_fault = true;
@@ -110,7 +110,7 @@ export default class MMU {
 
                 if ((<Page> this.frames[i].page).id == page_call.id) {
                     /* page is already in memory */
-                    this.algorithm.onPageAlreadyInMemory?.(page_call);
+                    this.algorithm.onPageAlreadyInMemory?.(this.getCurrentStateData(page_call));
 
                     this.last_call_caused_fault = false;
                     page_fault = false;
@@ -132,14 +132,7 @@ export default class MMU {
                 this.last_call_caused_fault = true;
 
                 /* replace a page */
-                const data: MemoryStateData = {
-                    page_call: page_call,
-                    last_replaced_index: this.last_replaced_index,
-                    current_frames: this.frames,
-                    future_page_calls: this.page_call_queue,
-                    previous_page_calls: this.previous_page_calls
-                };
-                const index_to_replace = this.algorithm.handlePageFault(data);
+                const index_to_replace = this.algorithm.handlePageFault(this.getCurrentStateData(page_call));
                 this.frames[index_to_replace].page = page_call;
 
                 this.last_replaced_index = index_to_replace;
@@ -166,6 +159,18 @@ export default class MMU {
         }
 
         this.time++;
+    }
+
+    getCurrentStateData(page_call: Page): MemoryStateData {
+        const data: MemoryStateData = {
+            page_call: page_call,
+            last_replaced_index: this.last_replaced_index,
+            current_frames: this.frames,
+            future_page_calls: this.page_call_queue,
+            previous_page_calls: this.previous_page_calls
+        };
+
+        return data;
     }
 
     isFinished(): boolean {

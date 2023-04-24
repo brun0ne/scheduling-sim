@@ -13,9 +13,9 @@ export default interface ReplacementAlgorithm {
     /* should be the same as the filename */
     name: string
 
-    onPageCall?: (page_call: Readonly<Page>) => void;
+    onPageCall?: (data: MemoryStateData) => void;
 
-    onPageAlreadyInMemory?: (page_call: Readonly<Page>) => void;
+    onPageAlreadyInMemory?: (data: MemoryStateData) => void;
 
     handlePageFault: (data: MemoryStateData) => number;
 }

@@ -8,39 +8,52 @@ import Page from "../Page";
 export default class ALRU implements ReplacementAlgorithm {
     name: string = "ALRU"
 
-    bit_array: Array<boolean> = [];
+    bit_array: Array<boolean> = []
+    pointer: number = 0
 
-    onPageCall(page_call: Readonly<Page>) {
-        /* initialize the "second chance" bit to 1 */
-        if (this.bit_array[page_call.id] == null) {
-            this.bit_array[page_call.id] = false;
-        }
-    }
-
-    onPageAlreadyInMemory(page_call: Readonly<Page>) {
+    onPageAlreadyInMemory(data: MemoryStateData) {
         /* set the "second chance" bit to 1 */
-        this.bit_array[page_call.id] = true;
+        const index = data.current_frames.findIndex(x => x.page?.id == data.page_call.id);
+
+        if (index == -1)
+            throw new Error("ALRU: fatal error (index -1)");
+
+        this.bit_array[index] = true;
     }
 
     handlePageFault(data: MemoryStateData): number {
-        /* find the firt frame that has the "second chance" bit set to 0 */
+        /* make sure all bits are initialized to 0 (if unset) */
         for (let i = 0; i < data.current_frames.length; i++) {
-            const frame = data.current_frames[i];
+            if (this.bit_array[i] == null)
+                this.bit_array[i] = false;
+        }
+
+        /* make sure the pointer is in range */
+        this.pointer = this.pointer % data.current_frames.length;
+
+        /* find the first frame that has the "second chance" bit set to 0 */
+        while (true) {
+            const frame = data.current_frames[this.pointer];
             if (frame.page == null) {
                 console.warn("Frame is empty - this should be ensured not to happen by the caller");
-                return i;
+
+                /* set the "second chance" bit to 1 */
+                this.bit_array[this.pointer] = true;
+                return this.pointer++;
             }
 
             /* the "second chance" bit is 0, so we can replace this frame */
-            if (this.bit_array[frame.page.id] == false) {
-                return i;
+            if (this.bit_array[this.pointer] == false) {
+                /* set the "second chance" bit to 1 */
+                this.bit_array[this.pointer] = true;
+                return this.pointer++;
             }
 
             /* set the "second chance" bit to 0 */
-            this.bit_array[frame.page.id] = false;
-        }
+            this.bit_array[this.pointer] = false;
 
-        /* if we get here, all frames had the "second chance" bit set to 1, so we replace the first frame */
-        return 0;
+            /* increment the pointer */
+            this.pointer = (this.pointer + 1) % data.current_frames.length;
+        }
     }
 }
