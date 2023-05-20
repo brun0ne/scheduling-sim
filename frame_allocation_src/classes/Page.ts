@@ -12,5 +12,6 @@ export default class Page {
 
     call(time: number): void {
         this.last_call_time = time;
+        this.process.done_calls++;
     }
 }

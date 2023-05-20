@@ -46,6 +46,11 @@ export default class LRU implements ReplacementAlgorithm {
             }
         }
 
+        if (frame_to_replace_index == -1) {
+            console.warn("No frame to replace found by LRU");
+            return -1;
+        }
+
         return data.current_frames[frame_to_replace_index].id;
     }
 }

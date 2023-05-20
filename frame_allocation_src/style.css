@@ -33,6 +33,13 @@
     cursor: pointer;
 }
 
+#main_call_queue {
+    position: absolute;
+    height: 40%;
+
+    overflow-y: auto;
+}
+
 .process_name {
     color: white;
 }

@@ -57,6 +57,15 @@
                     <label for="s_max_calls">Max calls amount</label>
                     <input id="s_max_calls" type="text" value="5" autocomplete="off"/>
                 </div>
+                <!-- Special options for Page Fault Control -->
+                <div id="s_min_page_faults_all" style="display: none;">
+                    <label for="s_min_page_faults" style="color: yellow">Min page faults</label>
+                    <input id="s_min_page_faults" type="number" min="0" max="1" step="0.05" value="0.2" autocomplete="off"/>
+                </div>
+                <div id="s_max_page_faults_all" style="display: none;">
+                    <label for="s_max_page_faults" style="color: yellow">Max page faults</label>
+                    <input id="s_max_page_faults" type="number" min="0" max="1" step="0.05" value="0.7" autocomplete="off"/>
+                </div>
                 <h2 style="vertical-align: middle">Processes <span id="p_current_count">(0)</span> <span id="clear_button">[clear]</span></h2>
                 <div>
                     <label for="c_count">Count</label>

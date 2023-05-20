@@ -130,8 +130,10 @@ export default class AllocatingMMU {
                     /* insert into the first free frame assigned to the process */
                     this.frames[i].page = page_call;
 
-                    /* increment the total page faults */
+                    /* increment page faults */
                     this.total_page_faults++;
+                    page_call.process.page_faults++;
+
                     this.last_call_caused_fault = true;
 
                     page_fault = false; // page fault already handled
@@ -157,13 +159,16 @@ export default class AllocatingMMU {
                     throw new Error("Initial page fill not handled properly");
                 }
 
-                /* increment the total page faults */
+                /* increment page faults */
                 this.total_page_faults++;
+                page_call.process.page_faults++;
+
                 this.last_call_caused_fault = true;
 
                 /* replace a page */
                 const id_of_frame_to_replace = this.replacementAlgorithm.handlePageFault(this.getCurrentStateData(page_call));
-                this.frames[this.getFrameIndexById(id_of_frame_to_replace)].page = page_call;
+                if (id_of_frame_to_replace != -1)
+                    this.frames[this.getFrameIndexById(id_of_frame_to_replace)].page = page_call;
             }
 
             /* ensure that the page is now in memory */

@@ -3,6 +3,9 @@ export default class Process {
     number_of_calls: number
     id: number
 
+    page_faults: number = 0
+    done_calls: number = 0
+
     private calls: Array<number> = []
 
     constructor(range_of_pages: [number, number], number_of_calls: number, id: number) {

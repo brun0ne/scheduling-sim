@@ -6,6 +6,7 @@ import Page from "./Page";
 import Equal from "./algorithms/Equal";
 import AnimationGUI from "./AnimationGUI";
 import Proportional from "./algorithms/Proportional";
+import PageFaultControl from "./algorithms/PageFaultControl";
 
 export default class Menu implements IMenu {
     display: Display
@@ -66,6 +67,7 @@ export default class Menu implements IMenu {
         /**
          * algorithm select
          * -> disable running with animation if compare_all
+         * -> show special options for page fault control
          */
         const algorithm_select = document.getElementById("a_type") as HTMLSelectElement;
         algorithm_select.addEventListener("change", (e: Event) => {
@@ -74,6 +76,15 @@ export default class Menu implements IMenu {
             }
             else {
                 (<HTMLButtonElement>document.getElementById("run_with_animation_button")).removeAttribute("disabled");
+            }
+
+            if ((<HTMLSelectElement>e.target).value.toLowerCase() === "fault_control") {
+                (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "block";
+                (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "block";
+            }
+            else {
+                (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "none";
+                (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "none";
             }
         });
 
@@ -147,7 +158,7 @@ export default class Menu implements IMenu {
 
         const generate_call_queue_button = document.getElementById("generate_call_queue_button") as HTMLButtonElement;
 
-        if (this.memory.processes.length > 0) {
+        if (this.memory.processes.length > 0 && this.memory.call_pool.length == 0) {
             generate_call_queue_button.removeAttribute("disabled");
         }
         else {
@@ -207,7 +218,7 @@ export default class Menu implements IMenu {
                 }
             case "fault_control":
                 {
-                    throw new Error("Not implemented");
+                    this.memory.setAlgorithm(new PageFaultControl());
                     break;
                 }
             case "locality_model":
@@ -230,6 +241,7 @@ export default class Menu implements IMenu {
             const algorithms = [
                 new Equal(),
                 new Proportional(),
+                new PageFaultControl()
             ];
 
             this.memory.compareAllAndDisplayResults(algorithms);
