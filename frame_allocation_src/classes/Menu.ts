@@ -4,19 +4,18 @@ import AllocatingMMU from "./AllocatingMMU";
 import Process from "./Process";
 import Page from "./Page";
 import Equal from "./algorithms/Equal";
-
-type IAnimationGUI = any; // TODO: import AnimationGUI
+import AnimationGUI from "./AnimationGUI";
 
 export default class Menu implements IMenu {
     display: Display
     memory: AllocatingMMU
-    animationGUI: IAnimationGUI
+    animationGUI: AnimationGUI
 
     constructor() {
         this.display = new Display();
         this.memory = new AllocatingMMU();
 
-        // this.animationGUI = new AnimationGUI(this);
+        this.animationGUI = new AnimationGUI(this);
     }
 
     init(): void {
@@ -44,7 +43,7 @@ export default class Menu implements IMenu {
          */
         this.memory.init(5, 3);
         this.display.init("main_canvas");
-        // this.animationGUI.init();
+        this.animationGUI.init();
         this.display.setResizeCallback(() => { this.refreshCalls() });
 
         /** 
@@ -232,7 +231,7 @@ export default class Menu implements IMenu {
         }
 
         if (animation) {
-            // this.animationGUI.startAnimation();
+            this.animationGUI.startAnimation();
         }
         else {
             const results = this.memory.simulate();
