@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../shared/shared.css">
+        <link rel="stylesheet" href="style.css">
+
+        <title>Frame Allocation Simulator</title>
+
+        <!-- free open source icon from https://iconduck.com/sets/magicons-flat-icon-set, designed by Darius Dan, iconPerk -->
+        <link rel="icon" type="image/png" href="../shared/icon.svg">
+
+        <meta name="title" content="Frame Allocation Simulator">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="English">
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="800" height="600"></canvas>
+
+        <div id="results_wrapper">
+            <div id="results_header">Results</div>
+            <div id="results"></div>
+            <button id="results_close">Close</button>
+        </div>
+
+        <div id="footer">
+            <a href="https://github.com/brun0ne/scheduling-sim" target="_blank" style="position: absolute; z-index: 5" title="See repository">github</a>
+        </div>
+
+        <div id="settings">
+            <div id="home_button" title="Go back">
+                <i class="fa fa-arrow-left" onclick="window.location = '../index.html'" style="cursor: pointer"></i>
+            </div>
+
+            <h2 style="color: yellow">Frame Allocation Simulator</h2>
+
+            <div id="settings_calls" class="settings_list">
+                <h2 style="vertical-align: middle">Settings</h2>
+                <div>
+                    <label for="s_frame_count">Frame count</label>
+                    <input id="s_frame_count" type="text" value="3" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="s_min_range">Min call range size</label>
+                    <input id="s_min_range" type="text" value="2" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="s_max_range">Max call range size</label>
+                    <input id="s_max_range" type="text" value="5" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="s_min_calls">Min calls amount</label>
+                    <input id="s_min_calls" type="text" value="1" autocomplete="off"/>
+                </div>
+                <div>
+                    <label for="s_max_calls">Max calls amount</label>
+                    <input id="s_max_calls" type="text" value="5" autocomplete="off"/>
+                </div>
+                <h2 style="vertical-align: middle">Processes <span id="p_current_count">(0)</span> <span id="clear_button">[clear]</span></h2>
+                <div>
+                    <label for="c_count">Count</label>
+                    <input id="c_count" type="text" value="100" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div id="add" style="margin-top: 2%;">
+                <button id="add_button">Add</button>
+            </div>
+
+            <div id="settings_algorithm">
+                <h2>Algorithm</h2>
+                <div>
+                    <label for="a_type">Type</label>
+                    <select id="a_type" autocomplete="off" style="width: 50%">
+                        <option value="equal">Equal</option>
+                        <option value="proportional">Proportional</option>
+                        <option value="fault_control">Fault control</option>
+                        <option value="locality_model">Locality model</option>
+                        <option value="compare_all">Compare all</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="run" style="margin-top: 2%">
+                <button id="run_button">Run</button>
+                <button id="run_with_animation_button">Run with animation</button>
+            </div>
+
+            <div id="current_state_wrapper">
+                <div id="processes_wrapper">
+                    <div id="all_processes"></div>
+                    <button id="generate_call_queue_button" style="margin: 2%" disabled>Generate Call Queue</button>
+                </div>
+                <div id="call_queue">
+                    <h2>Call queue <span id="current_call_count">(0)</span> <span id="clear_call_queue_button">[clear]</span></h2> 
+                    <div id="main_call_queue"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="animation_gui">
+
+        </div>
+        
+        <script src="main-bundle.js"></script>
+    </body>
+</html>

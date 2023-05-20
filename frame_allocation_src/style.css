@@ -1,0 +1,42 @@
+#current_state_wrapper {
+    position: fixed;
+    top: 10%;
+    right: 0;
+
+    width: 50%;
+    height: 90%;
+}
+
+#processes_wrapper {
+    height: 30%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#all_processes {
+    height: 70%;
+    width: 100%;
+
+    overflow-y: auto;
+}
+
+#clear_call_queue_button {
+    color: red;
+    font-size: medium;
+
+    display: inline-block;
+
+    cursor: pointer;
+}
+
+.process_name {
+    color: white;
+}
+
+.process_calls {
+    color: yellow;
+}
