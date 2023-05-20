@@ -5,6 +5,7 @@ import Process from "./Process";
 import Page from "./Page";
 import Equal from "./algorithms/Equal";
 import AnimationGUI from "./AnimationGUI";
+import Proportional from "./algorithms/Proportional";
 
 export default class Menu implements IMenu {
     display: Display
@@ -104,7 +105,11 @@ export default class Menu implements IMenu {
         for (let i = 0; i < process_count; i++) {
             const page_range = Math.floor(Math.random() * (page_range_max - page_range_min + 1)) + page_range_min;
 
-            this.memory.addProcess(new Process([current_range_min, current_range_min + page_range], Math.floor(Math.random() * (call_count_max - call_count_min + 1)) + call_count_min));
+            this.memory.addProcess(new Process(
+                [current_range_min, current_range_min + page_range],
+                Math.floor(Math.random() * (call_count_max - call_count_min + 1)) + call_count_min,
+                i
+            ));
             this.memory.processes[this.memory.processes.length - 1].generateCalls();
 
             current_range_min += page_range;
@@ -197,7 +202,7 @@ export default class Menu implements IMenu {
                 }
             case "proportional":
                 {
-                    throw new Error("Not implemented");
+                    this.memory.setAlgorithm(new Proportional());
                     break;
                 }
             case "fault_control":
@@ -224,9 +229,10 @@ export default class Menu implements IMenu {
         if (compare_all) {
             const algorithms = [
                 new Equal(),
+                new Proportional(),
             ];
 
-            // this.memory.compareAllAndDisplayResults(algorithms);
+            this.memory.compareAllAndDisplayResults(algorithms);
             return;
         }
 

@@ -250,4 +250,26 @@ export default class AllocatingMMU {
         Total page calls: <b>${results!.total_calls.toFixed(0)}</b>
         `.replace(RegExp("\n", "g"), "<br />");
     }
+
+    compareAllAndDisplayResults(algorithms: Array<AllocationAlgorithm>): void {
+        const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results") as HTMLElement;
+        results_el.innerHTML = "";
+
+        for (let i = 0; i < algorithms.length; i++) {
+            this.setAlgorithm(algorithms[i]);
+            const results: Results = this.simulate();
+
+            results_el.innerHTML += `
+            Algorithm: ${algorithms[i].name.toUpperCase()}
+            Total page faults: <b style='color: red'>${results.total_page_faults.toFixed(0)}</b>
+            Total page hits: <b style='color: lime'>${results.total_page_hits.toFixed(0)}</b>
+            Total page calls: <b>${results.total_calls.toFixed(0)}</b>
+            `.replace(RegExp("\n", "g"), "<br />");
+
+            results_el.innerHTML += "<br />";
+        }
+    }
 }

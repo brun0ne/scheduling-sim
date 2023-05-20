@@ -3,15 +3,12 @@ export default class Process {
     number_of_calls: number
     id: number
 
-    static next_id: number = 0
-
     private calls: Array<number> = []
 
-    constructor(range_of_pages: [number, number], number_of_calls: number) {
+    constructor(range_of_pages: [number, number], number_of_calls: number, id: number) {
         this.range_of_pages = range_of_pages;
         this.number_of_calls = number_of_calls;
-
-        this.id = Process.next_id++;
+        this.id = id;
     }
 
     generateCalls(): void {
