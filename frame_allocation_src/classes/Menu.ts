@@ -7,6 +7,7 @@ import Equal from "./algorithms/Equal";
 import AnimationGUI from "./AnimationGUI";
 import Proportional from "./algorithms/Proportional";
 import PageFaultControl from "./algorithms/PageFaultControl";
+import LocalityModel from "./algorithms/LocalityModel";
 
 export default class Menu implements IMenu {
     display: Display
@@ -175,7 +176,7 @@ export default class Menu implements IMenu {
             const process_el = document.createElement("span");
             process_el.classList.add("process");
 
-            process_el.innerHTML = `<span class="process_name">Calls for process ${i}: </span> <span class="process_calls">${process.getCalls().join(", ")}</span><br />`;
+            process_el.innerHTML = `<span class="process_name">Calls of process ${i}: </span> <span class="process_calls">${process.getCalls().join(", ")}</span><br />`;
 
             all_processes_el.appendChild(process_el);
         }
@@ -223,7 +224,7 @@ export default class Menu implements IMenu {
                 }
             case "locality_model":
                 {
-                    throw new Error("Not implemented");
+                    this.memory.setAlgorithm(new LocalityModel());
                     break;
                 }
             case "compare_all":
@@ -241,7 +242,8 @@ export default class Menu implements IMenu {
             const algorithms = [
                 new Equal(),
                 new Proportional(),
-                new PageFaultControl()
+                new PageFaultControl(),
+                // new LocalityModel()
             ];
 
             this.memory.compareAllAndDisplayResults(algorithms);

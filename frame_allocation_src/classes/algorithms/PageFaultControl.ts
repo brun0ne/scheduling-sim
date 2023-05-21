@@ -6,7 +6,7 @@ import Process from "../Process";
 import Proportional from "./Proportional";
 
 export default class PageFaultControl implements AllocationAlgorithm {
-    name: string = "Page Fault Control"
+    name: string = "PageFaultControl"
     run_proportional: boolean = true
 
     allocateFrames(frames: Frame[], processes: readonly Readonly<Process>[]): void {
