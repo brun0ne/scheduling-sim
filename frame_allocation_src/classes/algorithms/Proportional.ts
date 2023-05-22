@@ -11,7 +11,11 @@ export default class Proportional implements AllocationAlgorithm {
 
         let frames_allocated = 0;
         for (let i = 0; i < processes.length; i++) {
-            let frames_for_process = Math.floor(processes[i].number_of_calls / total_calls * frames.length) || 1;
+            let frames_for_process = Math.floor((processes[i].number_of_calls / total_calls) * frames.length);
+
+            if (frames_for_process < 1) {
+                frames_for_process = 1;
+            }
 
             for (let j = 0; j < frames_for_process; j++) {
                 if (frames_allocated >= frames.length) {

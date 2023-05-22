@@ -80,14 +80,15 @@ export default class Menu implements IMenu {
             }
 
             if ((<HTMLSelectElement>e.target).value.toLowerCase() === "fault_control" ||
-                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all")
-            {
+                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all") {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "block";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "block";
+                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "block";
             }
             else {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "none";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "none";
+                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "none";
             }
         });
 
@@ -134,6 +135,8 @@ export default class Menu implements IMenu {
 
     clearProcesses(): void {
         this.memory.clearProcesses();
+        this.memory.clearPageCallPool();
+
         this.refreshCalls();
     }
 
@@ -208,6 +211,10 @@ export default class Menu implements IMenu {
         const algStr = (<HTMLInputElement>document.getElementById("a_type")).value;
         let compare_all: boolean = false;
 
+        const min_freq = parseFloat((<HTMLInputElement>document.getElementById("s_min_page_faults")).value);
+        const max_freq = parseFloat((<HTMLInputElement>document.getElementById("s_max_page_faults")).value);
+        const time_window = parseFloat((<HTMLInputElement>document.getElementById("s_time_window")).value);
+
         switch (algStr.toLowerCase()) {
             case "equal":
                 {
@@ -221,15 +228,12 @@ export default class Menu implements IMenu {
                 }
             case "fault_control":
                 {
-                    const min_freq = parseFloat((<HTMLInputElement>document.getElementById("s_min_page_faults")).value);
-                    const max_freq = parseFloat((<HTMLInputElement>document.getElementById("s_max_page_faults")).value);
-
                     if (min_freq >= max_freq) {
                         alert("Minimum frequency has to be smaller than the maximum");
                         return;
                     }
 
-                    this.memory.setAlgorithm(new PageFaultControl(min_freq, max_freq));
+                    this.memory.setAlgorithm(new PageFaultControl(min_freq, max_freq, time_window));
                     break;
                 }
             case "locality_model":
@@ -249,9 +253,6 @@ export default class Menu implements IMenu {
         }
 
         if (compare_all) {
-            const min_freq = parseFloat((<HTMLInputElement>document.getElementById("s_min_page_faults")).value);
-            const max_freq = parseFloat((<HTMLInputElement>document.getElementById("s_max_page_faults")).value);
-
             if (min_freq >= max_freq) {
                 alert("Minimum frequency has to be smaller than the maximum");
                 return;
@@ -260,7 +261,7 @@ export default class Menu implements IMenu {
             const algorithms = [
                 new Equal(),
                 new Proportional(),
-                new PageFaultControl(min_freq, max_freq),
+                new PageFaultControl(min_freq, max_freq, time_window),
                 // new LocalityModel()
             ];
 

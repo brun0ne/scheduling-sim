@@ -10,7 +10,6 @@ export default class Equal implements AllocationAlgorithm {
         const frames_per_process = Math.floor(frames.length / processes.length);
 
         console.log(`Allocating ${frames_per_process} frames per process`);
-        console.log(`data.current_frames.length = ${frames.length}, data.processes.length = ${processes.length}`);
 
         for (let i = 0; i < frames.length; i++) {
             if (frames[i].process != null) {

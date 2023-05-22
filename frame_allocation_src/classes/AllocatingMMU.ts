@@ -53,7 +53,11 @@ export default class AllocatingMMU {
         this.total_page_faults = 0;
 
         for (let i = 0; i < this.number_of_frames; i++) {
-            this.frames.push(new Frame());
+            this.frames.push(new Frame(i));
+        }
+
+        for (const process of this.processes) {
+            process.reset();
         }
     }
 
@@ -96,11 +100,38 @@ export default class AllocatingMMU {
             throw new Error("No algorithm selected");
         }
 
-        const page_call = this.call_queue.shift();
+        /* check if any process is stopped/resumed */
+        for (const process of this.processes) {
+            process.updateRunningStatus(this.frames);
+        }
+
+        /* deallocate finished processes */
+        this.frames.forEach(frame => {
+            if (frame.process != null && !frame.process.running)
+                frame.process = null;
+        });
+
+        /* reallocate frames to processes */
+        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes, this.time);
+
+        const unallocatedFramesLength = this.frames.filter(frame => frame.process == null).length;
+        if (unallocatedFramesLength > 0) {
+            console.warn(`Not all frames are allocated\nAllocated: ${this.frames.length - unallocatedFramesLength}\nUnallocated: ${unallocatedFramesLength}`);
+        }
+
+        /* traverse the queue until a call belonging to a running process is found */
+        let page_call: Page | null = null;
+        for (let i = 0; i < this.call_queue.length; i++) {
+            if (this.call_queue[i].process.running) {
+                page_call = this.call_queue[i];
+                this.call_queue.splice(i, 1);
+                break;
+            }
+        }
 
         /* no page call at this time */
         if (page_call == null) {
-            console.warn("Empty page call queue but not finished");
+            console.warn("Empty page call queue or no processes running");
             this.time++;
             return;
         }
@@ -109,14 +140,6 @@ export default class AllocatingMMU {
         console.log("Page call: " + page_call.id);
 
         if (page_call) {
-            /* allocate frames to processes */
-            this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes);
-
-            const unallocatedFramesLength = this.frames.filter(frame => frame.process == null).length;
-            if (unallocatedFramesLength > 0) {
-                console.warn(`Not all frames are allocated\nAllocated: ${this.frames.length - unallocatedFramesLength}\nUnallocated: ${unallocatedFramesLength}`);
-            }
-
             /* execute replacement algorithm */
             this.replacementAlgorithm.onPageCall?.(this.getCurrentStateData(page_call));
 
@@ -133,6 +156,7 @@ export default class AllocatingMMU {
                     /* increment page faults */
                     this.total_page_faults++;
                     page_call.process.page_faults++;
+                    page_call.process.fault_times.push(this.time);
 
                     this.last_call_caused_fault = true;
 
@@ -155,18 +179,20 @@ export default class AllocatingMMU {
                 console.log("Page fault: " + page_call.id);
 
                 /* ensure that there are no free frames assigned to the process */
-                if (this.frames.find(frame => frame.process == page_call.process && frame.page == null) != null) {
+                if (this.frames.find(frame => frame.process == page_call!.process && frame.page == null) != null) {
                     throw new Error("Initial page fill not handled properly");
                 }
 
                 /* increment page faults */
                 this.total_page_faults++;
                 page_call.process.page_faults++;
+                page_call.process.fault_times.push(this.time);
 
                 this.last_call_caused_fault = true;
 
                 /* replace a page */
                 const id_of_frame_to_replace = this.replacementAlgorithm.handlePageFault(this.getCurrentStateData(page_call));
+
                 if (id_of_frame_to_replace != -1)
                     this.frames[this.getFrameIndexById(id_of_frame_to_replace)].page = page_call;
             }
@@ -235,8 +261,22 @@ export default class AllocatingMMU {
     simulate(): Results {
         this.init();
 
+        /* ensure that an algorithm is selected */
+        if (this.allocationAlgorithm == null) {
+            throw new Error("No algorithm selected");
+        }
+
+        /* allocate frames to processes */
+        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes, 0);
+
         while (!this.isFinished()) {
             this.nextTick();
+
+            const MAX_TIME = 200;
+            if (this.time > MAX_TIME) {
+                console.warn("Simulation timed out");
+                break;
+            }
         }
 
         return this.getResults();

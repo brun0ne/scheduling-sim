@@ -11,13 +11,16 @@ export default class PageFaultControl implements AllocationAlgorithm {
 
     min_fault_freq: number
     max_faults_freq: number
+    time_window: number
 
-    constructor(min_fault_freq: number, max_fault_freq: number) {
+    constructor(min_fault_freq: number, max_fault_freq: number, time_window: number = 5) {
         this.min_fault_freq = min_fault_freq;
         this.max_faults_freq = max_fault_freq;
+
+        this.time_window = time_window;
     }
 
-    allocateFrames(frames: Frame[], processes: readonly Readonly<Process>[]): void {
+    allocateFrames(frames: Frame[], processes: readonly Readonly<Process>[], time: number): void {
         /* first run proportional allocation */
         if (this.run_proportional) {
             this.run_proportional = false;
@@ -29,15 +32,18 @@ export default class PageFaultControl implements AllocationAlgorithm {
         const MAX_FAULTS = this.max_faults_freq; // frequency
 
         for (let i = 0; i < processes.length; i++) {
-            const fault_frequency = processes[i].page_faults / processes[i].done_calls;
-            const frames_number = frames.filter(frame => frame.process == processes[i]).length;
+            const faultsInTimeWindow = processes[i].getFaultsInLastNTicks(this.time_window, time!);
+            let fault_frequency = faultsInTimeWindow / this.time_window;
+            let frames_number = frames.filter(frame => frame.process == processes[i]).length;
+
+            console.log(`Process ${processes[i].id} fault frequency: ${fault_frequency} (${faultsInTimeWindow} / ${this.time_window})`);
 
             if (fault_frequency < MIN_FAULTS && frames_number > 1) {
                 /* deallocate 1 frame */
                 for (let j = 0; j < frames.length; j++) {
                     if (frames[j].process == processes[i]) {
                         frames[j].process = null;
-                        break;
+                        return this.allocateFrames(frames, processes, time);
                     }
                 }
             }
