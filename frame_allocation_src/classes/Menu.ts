@@ -79,7 +79,9 @@ export default class Menu implements IMenu {
                 (<HTMLButtonElement>document.getElementById("run_with_animation_button")).removeAttribute("disabled");
             }
 
-            if ((<HTMLSelectElement>e.target).value.toLowerCase() === "fault_control") {
+            if ((<HTMLSelectElement>e.target).value.toLowerCase() === "fault_control" ||
+                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all")
+            {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "block";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "block";
             }
@@ -219,7 +221,15 @@ export default class Menu implements IMenu {
                 }
             case "fault_control":
                 {
-                    this.memory.setAlgorithm(new PageFaultControl());
+                    const min_freq = parseFloat((<HTMLInputElement>document.getElementById("s_min_page_faults")).value);
+                    const max_freq = parseFloat((<HTMLInputElement>document.getElementById("s_max_page_faults")).value);
+
+                    if (min_freq >= max_freq) {
+                        alert("Minimum frequency has to be smaller than the maximum");
+                        return;
+                    }
+
+                    this.memory.setAlgorithm(new PageFaultControl(min_freq, max_freq));
                     break;
                 }
             case "locality_model":
@@ -239,10 +249,18 @@ export default class Menu implements IMenu {
         }
 
         if (compare_all) {
+            const min_freq = parseFloat((<HTMLInputElement>document.getElementById("s_min_page_faults")).value);
+            const max_freq = parseFloat((<HTMLInputElement>document.getElementById("s_max_page_faults")).value);
+
+            if (min_freq >= max_freq) {
+                alert("Minimum frequency has to be smaller than the maximum");
+                return;
+            }
+
             const algorithms = [
                 new Equal(),
                 new Proportional(),
-                new PageFaultControl(),
+                new PageFaultControl(min_freq, max_freq),
                 // new LocalityModel()
             ];
 

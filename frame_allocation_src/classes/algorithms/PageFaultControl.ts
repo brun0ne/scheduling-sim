@@ -9,6 +9,14 @@ export default class PageFaultControl implements AllocationAlgorithm {
     name: string = "PageFaultControl"
     run_proportional: boolean = true
 
+    min_fault_freq: number
+    max_faults_freq: number
+
+    constructor(min_fault_freq: number, max_fault_freq: number) {
+        this.min_fault_freq = min_fault_freq;
+        this.max_faults_freq = max_fault_freq;
+    }
+
     allocateFrames(frames: Frame[], processes: readonly Readonly<Process>[]): void {
         /* first run proportional allocation */
         if (this.run_proportional) {
@@ -17,8 +25,8 @@ export default class PageFaultControl implements AllocationAlgorithm {
         }
 
         /* then run page fault control */
-        const MIN_FAULTS = 3;
-        const MAX_FAULTS = 5; // frequency
+        const MIN_FAULTS = this.min_fault_freq;
+        const MAX_FAULTS = this.max_faults_freq; // frequency
 
         for (let i = 0; i < processes.length; i++) {
             const fault_frequency = processes[i].page_faults / processes[i].done_calls;
