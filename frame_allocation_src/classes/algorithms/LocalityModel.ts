@@ -7,21 +7,14 @@ import Proportional from "./Proportional";
 
 export default class LocalityModel implements AllocationAlgorithm {
     name: string = "LocalityModel"
+    display_name = "Locality Model";
     time_window: number
-
-    run_proportional: boolean = true
 
     constructor(time_window: number) {
         this.time_window = time_window;
     }
 
     allocateFrames(frames: Array<Frame>, processes: ReadonlyArray<Readonly<Process>>): void {
-        /* first run proportional allocation */
-        if (this.run_proportional) {
-            this.run_proportional = false;
-            return new Proportional().allocateFrames(frames, processes);
-        }
-
         /* deallocate all frames */
         for (let i = 0; i < frames.length; i++) {
             frames[i].process = null;

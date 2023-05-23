@@ -7,6 +7,7 @@ import Proportional from "./Proportional";
 
 export default class PageFaultControl implements AllocationAlgorithm {
     name: string = "PageFaultControl"
+    display_name = "Fault Control";
     run_proportional: boolean = true
 
     min_fault_freq: number

@@ -1,3 +1,10 @@
+#results_wrapper {
+    left: 15% !important;
+    top: 10% !important;
+    width: 70% !important;
+    height: 60% !important;
+}
+
 #current_state_wrapper {
     position: fixed;
     top: 10%;

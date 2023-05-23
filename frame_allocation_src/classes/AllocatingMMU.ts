@@ -285,13 +285,15 @@ export default class AllocatingMMU {
         return this.getResults();
     }
 
-    displayResults(results?: Results, algStr: string = this.allocationAlgorithm!.name): void {
+    displayResults(results?: Results,
+        algStr: string = this.allocationAlgorithm!.display_name ?? this.allocationAlgorithm!.name
+        ): void {
         const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
         results_wrapper.style.display = "flex";
 
         const results_el = document.getElementById("results") as HTMLElement;
         results_el.innerHTML = `
-        Algorithm: ${algStr.toUpperCase()}
+        Algorithm: ${algStr}
 
         Total page faults: <b style='color: red'>${results!.total_page_faults.toFixed(0)}</b>
         Total page hits: <b style='color: lime'>${results!.total_page_hits.toFixed(0)}</b>
@@ -306,18 +308,93 @@ export default class AllocatingMMU {
         const results_el = document.getElementById("results") as HTMLElement;
         results_el.innerHTML = "";
 
+        const process_data: Array<Array<number>> = [];
+
         for (let i = 0; i < algorithms.length; i++) {
             this.setAlgorithm(algorithms[i]);
             const results: Results = this.simulate();
 
             results_el.innerHTML += `
-            Algorithm: ${algorithms[i].name.toUpperCase()}
+            Algorithm: ${algorithms[i].display_name ?? algorithms[i].name}
             Total page faults: <b style='color: red'>${results.total_page_faults.toFixed(0)}</b>
             Total page hits: <b style='color: lime'>${results.total_page_hits.toFixed(0)}</b>
             Total page calls: <b>${results.total_calls.toFixed(0)}</b>
             `.replace(RegExp("\n", "g"), "<br />");
 
             results_el.innerHTML += "<br />";
+
+            /* copy individual process page faults to process_data */
+            for (let j = 0; j < this.processes.length; j++) {
+                if (process_data[i] == null)
+                    process_data[i] = [];
+
+                process_data[i].push(this.processes[j].page_faults);
+            }
         }
+
+        /* compare results for each process individually (as a table) */
+        
+        /* 
+         * top row is the header, for the algorithm names (first cell left empty - corner)
+         * first colums is the process ids (first cell left empty - corner)
+         * each cell is the number of page faults for the process with the algorithm
+         */
+
+        const table_wrapper = document.createElement("div");
+        table_wrapper.style.display = "flex";
+        table_wrapper.style.flexDirection = "column";
+        table_wrapper.style.alignItems = "center";
+
+        const table = document.createElement("table");
+        table.style.border = "1px solid white";
+        table.style.borderCollapse = "collapse";
+
+        // add the table into the wrapper
+        table_wrapper.appendChild(table);
+
+        const header_row = document.createElement("tr");
+
+        const header_cell = document.createElement("td");
+        header_cell.style.border = "1px solid white";
+        header_cell.style.padding = "5px";
+        header_cell.style.color = "yellow";
+        header_cell.innerHTML = "Process";
+        header_row.appendChild(header_cell);
+
+        for (let i = 0; i < algorithms.length; i++) {
+            const header_cell = document.createElement("td");
+            header_cell.style.border = "1px solid white";
+            header_cell.style.padding = "5px";
+            header_cell.style.color = "yellow";
+
+            header_cell.innerHTML = algorithms[i].display_name ?? algorithms[i].name;
+            header_row.appendChild(header_cell);
+        }
+
+        table.appendChild(header_row);
+
+        for (let i = 0; i < this.processes.length; i++) {
+            const row = document.createElement("tr");
+
+            const cell = document.createElement("td");
+            cell.style.border = "1px solid white";
+            cell.style.padding = "5px";
+            cell.style.color = "yellow";
+            cell.innerHTML = this.processes[i].id.toString();
+            row.appendChild(cell);
+
+            for (let j = 0; j < algorithms.length; j++) {
+                const cell = document.createElement("td");
+                cell.style.border = "1px solid white";
+                cell.style.padding = "5px";
+                cell.innerHTML = process_data[j][i].toString();
+                row.appendChild(cell);
+            }
+
+            table.appendChild(row);
+        }
+
+        // add the table wrapper to the results element
+        results_el.appendChild(table_wrapper);
     }
 }
