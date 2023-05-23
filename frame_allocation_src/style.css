@@ -86,6 +86,14 @@
     scrollbar-gutter: stable both-edges;
 }
 
+#animation_info_chart_wrapper {
+    position: absolute;
+
+    width: 100%;
+    top: 15%;
+    height: 85%;
+}
+
 th:first-child {
     position: sticky;
     left: 0;

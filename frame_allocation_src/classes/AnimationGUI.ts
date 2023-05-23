@@ -113,7 +113,7 @@ export default class AnimationGUI implements IAnimationGUI {
         this.chart_process_select = document.getElementById("process_info_choice")! as HTMLSelectElement;
         this.chat_time_window_select = document.getElementById("process_info_time_window")! as HTMLSelectElement;
         this.chart_canvas = document.getElementById("animation_info_chart_canvas")! as HTMLCanvasElement;
-        
+
         this.chart_object = new Chart(this.chart_canvas!, {
             type: "line",
             data: {
@@ -127,11 +127,11 @@ export default class AnimationGUI implements IAnimationGUI {
                     fill: true,
                     tension: 0.1
                 }
-            ]
+                ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -139,7 +139,7 @@ export default class AnimationGUI implements IAnimationGUI {
                 }
             }
         });
-        
+
         this.resetChart();
 
         /**
@@ -383,8 +383,6 @@ export default class AnimationGUI implements IAnimationGUI {
         const selectedProcessID = parseInt(this.chart_process_select!.value);
         const selectedTimeWindow = parseInt(this.chat_time_window_select!.value);
 
-        console.log(`selectedProcessID: ${selectedProcessID}, selectedTimeWindow: ${selectedTimeWindow}`);
-
         /* get the process */
         const process = memory.processes.find(p => p.id == selectedProcessID);
         if (process == null)
@@ -398,7 +396,7 @@ export default class AnimationGUI implements IAnimationGUI {
         for (let i = selectedTimeWindow; i < process.fault_log.length; i++) {
             const faults = process.fault_log.slice(i - selectedTimeWindow, i).filter(fault => fault).length;
             const point_y = faults / selectedTimeWindow;
-            
+
             dataset.data.push(point_y);
         }
 
