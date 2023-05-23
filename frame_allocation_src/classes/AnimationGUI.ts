@@ -1,3 +1,5 @@
+import { Chart } from "chart.js/auto";
+
 import IAnimationGUI from "../../shared/interfaces/IAnimationGUI";
 import Menu from "./Menu";
 
@@ -31,6 +33,12 @@ export default class AnimationGUI implements IAnimationGUI {
 
     /* setInterval */
     storedSetInterval: NodeJS.Timer | null = null
+
+    /* info chart */
+    chart_process_select: HTMLSelectElement | null = null
+    chat_time_window_select: HTMLSelectElement | null = null
+    chart_canvas: HTMLCanvasElement | null = null
+    chart_object: Chart | null = null
 
     constructor(menu: Menu) {
         this.menu = menu;
@@ -98,7 +106,53 @@ export default class AnimationGUI implements IAnimationGUI {
          * prepare HTML table of states
          */
         this.initStateTable();
+
+        /**
+         * info chart
+         */
+        this.chart_process_select = document.getElementById("process_info_choice")! as HTMLSelectElement;
+        this.chat_time_window_select = document.getElementById("process_info_time_window")! as HTMLSelectElement;
+        this.chart_canvas = document.getElementById("animation_info_chart_canvas")! as HTMLCanvasElement;
+        
+        this.chart_object = new Chart(this.chart_canvas!, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Fault frequency",
+                    data: [],
+                    borderColor: "red",
+                    backgroundColor: "rgba(255, 0, 0, 0.2)",
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.1
+                }
+            ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        this.resetChart();
+
+        /**
+         * chart event listeners
+         */
+        this.chart_process_select.addEventListener("change", () => {
+            this.refreshChart();
+        });
+        this.chat_time_window_select.addEventListener("change", () => {
+            this.refreshChart();
+        });
     }
+
     togglePlaying(playing?: boolean): void {
         if (playing == null)
             this.playing = !this.playing;
@@ -154,6 +208,22 @@ export default class AnimationGUI implements IAnimationGUI {
         this.step_button.disabled = false;
 
         this.initStateTable();
+        this.resetChart();
+    }
+
+    resetChart(): void {
+        /* fill select */
+        const select = this.chart_process_select!;
+        select.innerHTML = "";
+        for (let i = 0; i < this.menu.memory.processes.length; i++) {
+            const process = this.menu.memory.processes[i];
+
+            const option = document.createElement("option");
+            option.value = process.id.toString();
+            option.innerHTML = `${process.id}`;
+
+            select.appendChild(option);
+        }
     }
 
     startAnimation(): void {
@@ -166,8 +236,8 @@ export default class AnimationGUI implements IAnimationGUI {
          * refresh info
          */
         this.refreshInfo();
-
         this.drawCalls();
+        this.refreshChart();
     }
 
     initStateTable(): void {
@@ -296,6 +366,49 @@ export default class AnimationGUI implements IAnimationGUI {
 
         this.info_in_queue!.innerHTML = memory.call_queue.length.toString();
         this.info_finished!.innerHTML = memory.call_history.length.toString();
+    }
+
+    refreshChart(): void {
+        if (this.chart_object == null)
+            throw new Error("call startAnimation() first!");
+
+        const memory = this.menu.memory;
+        const data = this.chart_object.data;
+
+        /* check if there are any processes */
+        if (memory.processes.length == 0)
+            return;
+
+        /* get which process is selected */
+        const selectedProcessID = parseInt(this.chart_process_select!.value);
+        const selectedTimeWindow = parseInt(this.chat_time_window_select!.value);
+
+        console.log(`selectedProcessID: ${selectedProcessID}, selectedTimeWindow: ${selectedTimeWindow}`);
+
+        /* get the process */
+        const process = memory.processes.find(p => p.id == selectedProcessID);
+        if (process == null)
+            throw new Error("process not found!");
+
+        /* update data */
+        const dataset = data.datasets[0];
+        dataset.label = `Fault frequency of process ${process.id}`;
+        dataset.data = [];
+
+        for (let i = selectedTimeWindow; i < process.fault_log.length; i++) {
+            const faults = process.fault_log.slice(i - selectedTimeWindow, i).filter(fault => fault).length;
+            const point_y = faults / selectedTimeWindow;
+            
+            dataset.data.push(point_y);
+        }
+
+        /* update labels */
+        data.labels = [];
+        for (let i = selectedTimeWindow; i < process.fault_log.length; i++) {
+            data.labels.push(i);
+        }
+
+        this.chart_object.update();
     }
 
     refreshSpeed(): void {

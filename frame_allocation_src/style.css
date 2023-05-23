@@ -55,10 +55,30 @@
     color: yellow;
 }
 
+#animation_info_chart {
+    position: fixed;
+    top: 20%;
+    left: 70%;
+    width: 30%;
+    height: 63%;
+
+    border: 1px solid white;
+}
+
+#animation_info_control {
+    margin: 1%;
+    width: 100%;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
 #animation_call_table {
     position: fixed;
     top: 35%;
-    left: 20%;
+    left: 5%;
     width: 60%;
     max-height: 40%;
 

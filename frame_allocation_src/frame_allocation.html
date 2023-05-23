@@ -167,6 +167,22 @@
                     </tbody>
                 </table>
             </div>
+
+            <div id="animation_info_chart">
+                <div id="animation_info_control">
+                    <label for="process_info_choice">Process:</label>
+                    <select id="process_info_choice" autocomplete="off">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                    <label for="process_info_time_window" style="color: yellow">For last N calls:</label>
+                    <input id="process_info_time_window" type="number" min="1" step="1" value="5" autocomplete="off" style="width: 20%"/>
+                </div>
+
+                <div id="animation_info_chart_wrapper">
+                    <canvas id="animation_info_chart_canvas" width="200" height="200"></canvas>
+                </div>
+            </div>
         </div>
         
         <script src="main-bundle.js"></script>

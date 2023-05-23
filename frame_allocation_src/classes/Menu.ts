@@ -84,16 +84,15 @@ export default class Menu implements IMenu {
                 (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all") {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "block";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "block";
-                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "block";
             }
             else {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "none";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "none";
-                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "none";
             }
 
             if ((<HTMLSelectElement>e.target).value.toLowerCase() === "locality_model" ||
-                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all") {
+                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all" ||
+                (<HTMLSelectElement>e.target).value.toLowerCase() === "fault_control") {
                 (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "block";
             }
             else {
