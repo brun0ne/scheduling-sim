@@ -112,7 +112,13 @@ export default class AllocatingMMU {
         });
 
         /* reallocate frames to processes */
-        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes, this.time);
+        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes);
+
+        /* remove pages from unallocated frames */
+        this.frames.forEach(frame => {
+            if (frame.process == null && frame.page != null)
+                frame.page = null;
+        });
 
         const unallocatedFramesLength = this.frames.filter(frame => frame.process == null).length;
         if (unallocatedFramesLength > 0) {
@@ -156,7 +162,6 @@ export default class AllocatingMMU {
                     /* increment page faults */
                     this.total_page_faults++;
                     page_call.process.page_faults++;
-                    page_call.process.fault_times.push(this.time);
 
                     this.last_call_caused_fault = true;
 
@@ -186,7 +191,6 @@ export default class AllocatingMMU {
                 /* increment page faults */
                 this.total_page_faults++;
                 page_call.process.page_faults++;
-                page_call.process.fault_times.push(this.time);
 
                 this.last_call_caused_fault = true;
 
@@ -214,7 +218,7 @@ export default class AllocatingMMU {
             }
 
             /* call the page */
-            page_call.call(this.time);
+            page_call.call(this.time, this.last_call_caused_fault);
         }
 
         this.time++;
@@ -267,7 +271,7 @@ export default class AllocatingMMU {
         }
 
         /* allocate frames to processes */
-        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes, 0);
+        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes);
 
         while (!this.isFinished()) {
             this.nextTick();

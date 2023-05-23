@@ -12,7 +12,7 @@ export default class Process {
     assignedFrames: number = 0
 
     private calls: Array<number> = []
-    fault_times: Array<number> = []
+    fault_log: Array<boolean> = []
 
     constructor(range_of_pages: [number, number], number_of_calls: number, id: number) {
         this.range_of_pages = range_of_pages;
@@ -27,7 +27,7 @@ export default class Process {
         this.running = true;
         this.assignedFrames = 0;
 
-        this.fault_times = [];
+        this.fault_log = [];
     }
 
     generateCalls(): void {
@@ -40,6 +40,13 @@ export default class Process {
 
     getCalls(): Array<number> {
         return this.calls;
+    }
+
+    addToFaultLog(fault: boolean) {
+        this.fault_log.push(fault);
+
+        if (this.fault_log.length != this.done_calls)
+            throw new Error("Fault log length does not match done calls");
     }
 
     updateRunningStatus(frames: ReadonlyArray<Readonly<Frame>>) {
@@ -63,16 +70,7 @@ export default class Process {
         this.assignedFrames = assignedFrames;
     }
 
-    getFaultsInLastNTicks(n: number, time: number) {
-        let faults: number = 0;
-
-        for (let i = this.fault_times.length - 1; i >= 0; i--) {
-            if (time - this.fault_times[i] > n)
-                break;
-
-            faults++;
-        }
-
-        return faults;
+    getFaultsInLastN(n: number) {
+        return this.fault_log.slice(this.fault_log.length - n, this.fault_log.length).filter(fault => fault).length;
     }
 }

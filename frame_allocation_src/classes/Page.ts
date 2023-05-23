@@ -10,8 +10,10 @@ export default class Page {
         this.process = process;
     }
 
-    call(time: number): void {
+    call(time: number, caused_fault: boolean): void {
         this.last_call_time = time;
         this.process.done_calls++;
+
+        this.process.addToFaultLog(caused_fault);
     }
 }
