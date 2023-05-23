@@ -1,4 +1,5 @@
 import Frame from "./Frame"
+import Page from "./Page"
 
 export default class Process {
     range_of_pages: [number, number]
@@ -7,12 +8,13 @@ export default class Process {
 
     page_faults: number = 0
     done_calls: number = 0
+    call_log: Array<Page> = []
+    fault_log: Array<boolean> = []
 
     running: boolean = true
     assignedFrames: number = 0
 
     private calls: Array<number> = []
-    fault_log: Array<boolean> = []
 
     constructor(range_of_pages: [number, number], number_of_calls: number, id: number) {
         this.range_of_pages = range_of_pages;
@@ -28,6 +30,7 @@ export default class Process {
         this.assignedFrames = 0;
 
         this.fault_log = [];
+        this.call_log = [];
     }
 
     generateCalls(): void {
@@ -47,6 +50,13 @@ export default class Process {
 
         if (this.fault_log.length != this.done_calls)
             throw new Error("Fault log length does not match done calls");
+    }
+
+    addToCallLog(page: Page) {
+        this.call_log.push(page);
+
+        if (this.call_log.length != this.done_calls)
+            throw new Error("Call log length does not match done calls");
     }
 
     updateRunningStatus(frames: ReadonlyArray<Readonly<Frame>>) {
@@ -72,5 +82,9 @@ export default class Process {
 
     getFaultsInLastN(n: number) {
         return this.fault_log.slice(this.fault_log.length - n, this.fault_log.length).filter(fault => fault).length;
+    }
+
+    getUniquePagesInLastN(n: number) {
+        return this.call_log.slice(this.call_log.length - n, this.call_log.length).map(page => page.id).filter((value, index, self) => self.indexOf(value) === index).length;
     }
 }

@@ -15,5 +15,6 @@ export default class Page {
         this.process.done_calls++;
 
         this.process.addToFaultLog(caused_fault);
+        this.process.addToCallLog(this);
     }
 }

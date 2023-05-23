@@ -230,6 +230,8 @@ export default class AnimationGUI implements IAnimationGUI {
 
         /* only add one column for the new state */
         const newCall = this.menu.memory.call_history.at(-1);
+        if (this.menu.memory.last_empty_queue)
+            return;
         if (newCall == null)
             return;
 

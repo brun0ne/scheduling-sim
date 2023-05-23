@@ -44,7 +44,8 @@ export default class Menu implements IMenu {
          * init 
          * set callback for resize
          */
-        this.memory.init(5, 3);
+        const initial_frame_count = parseInt((<HTMLInputElement>document.getElementById("s_frame_count")).value);
+        this.memory.init(initial_frame_count);
         this.display.init("main_canvas");
         this.animationGUI.init();
         this.display.setResizeCallback(() => { this.refreshCalls() });
@@ -61,7 +62,7 @@ export default class Menu implements IMenu {
                 return;
             }
 
-            this.memory.init(this.memory.number_of_pages, new_val);
+            this.memory.init(new_val);
             this.refreshCalls();
         });
 
@@ -88,6 +89,14 @@ export default class Menu implements IMenu {
             else {
                 (<HTMLDivElement>document.getElementById("s_min_page_faults_all")).style.display = "none";
                 (<HTMLDivElement>document.getElementById("s_max_page_faults_all")).style.display = "none";
+                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "none";
+            }
+
+            if ((<HTMLSelectElement>e.target).value.toLowerCase() === "locality_model" ||
+                (<HTMLSelectElement>e.target).value.toLowerCase() === "compare_all") {
+                (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "block";
+            }
+            else {
                 (<HTMLDivElement>document.getElementById("s_time_window_all")).style.display = "none";
             }
         });
@@ -238,7 +247,7 @@ export default class Menu implements IMenu {
                 }
             case "locality_model":
                 {
-                    this.memory.setAlgorithm(new LocalityModel());
+                    this.memory.setAlgorithm(new LocalityModel(time_window));
                     break;
                 }
             case "compare_all":
@@ -262,7 +271,7 @@ export default class Menu implements IMenu {
                 new Equal(),
                 new Proportional(),
                 new PageFaultControl(min_freq, max_freq, time_window),
-                // new LocalityModel()
+                new LocalityModel(time_window)
             ];
 
             this.memory.compareAllAndDisplayResults(algorithms);

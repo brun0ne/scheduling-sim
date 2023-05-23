@@ -13,7 +13,7 @@ export default class PageFaultControl implements AllocationAlgorithm {
     max_faults_freq: number
     time_window: number
 
-    constructor(min_fault_freq: number, max_fault_freq: number, time_window: number = 5) {
+    constructor(min_fault_freq: number, max_fault_freq: number, time_window: number) {
         this.min_fault_freq = min_fault_freq;
         this.max_faults_freq = max_fault_freq;
 
@@ -55,7 +55,7 @@ export default class PageFaultControl implements AllocationAlgorithm {
                 }
             }
 
-            if (fault_frequency > MAX_FAULTS) {
+            if (fault_frequency > MAX_FAULTS && processes[i].getCalls().length != processes[i].done_calls) {
                 /* allocate 1 frame if possible */
                 for (let j = 0; j < frames.length; j++) {
                     if (frames[j].process == null) {

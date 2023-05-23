@@ -38,11 +38,11 @@ export default class AllocatingMMU {
     time: number = 0
 
     last_call_caused_fault: boolean = false
+    last_empty_queue: boolean = false
 
     constructor() { }
 
-    init(number_of_pages?: number, number_of_frames?: number): void {
-        this.number_of_pages = number_of_pages ?? this.number_of_pages;
+    init(number_of_frames?: number): void {
         this.number_of_frames = number_of_frames ?? this.number_of_frames;
 
         this.call_queue = [...this.call_pool]; // copy array
@@ -125,6 +125,11 @@ export default class AllocatingMMU {
             console.warn(`Not all frames are allocated\nAllocated: ${this.frames.length - unallocatedFramesLength}\nUnallocated: ${unallocatedFramesLength}`);
         }
 
+        /* check again if any process is stopped/resumed */
+        for (const process of this.processes) {
+            process.updateRunningStatus(this.frames);
+        }
+
         /* traverse the queue until a call belonging to a running process is found */
         let page_call: Page | null = null;
         for (let i = 0; i < this.call_queue.length; i++) {
@@ -139,8 +144,10 @@ export default class AllocatingMMU {
         if (page_call == null) {
             console.warn("Empty page call queue or no processes running");
             this.time++;
+            this.last_empty_queue = true;
             return;
         }
+        this.last_empty_queue = false;
 
         this.call_history.push(page_call);
         console.log("Page call: " + page_call.id);
@@ -265,18 +272,10 @@ export default class AllocatingMMU {
     simulate(): Results {
         this.init();
 
-        /* ensure that an algorithm is selected */
-        if (this.allocationAlgorithm == null) {
-            throw new Error("No algorithm selected");
-        }
-
-        /* allocate frames to processes */
-        this.allocationAlgorithm.allocateFrames?.(this.frames, this.processes);
-
         while (!this.isFinished()) {
             this.nextTick();
 
-            const MAX_TIME = 200;
+            const MAX_TIME = 10000;
             if (this.time > MAX_TIME) {
                 console.warn("Simulation timed out");
                 break;
