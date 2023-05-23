@@ -86,7 +86,7 @@ export default class AnimationGUI implements IAnimationGUI {
                 return;
 
             const algorithmName = this.menu.memory.allocationAlgorithm.name;
-            window.open(`https://github.com/brun0ne/scheduling-sim/blob/main/page_replacement_src/classes/algorithms/${algorithmName}.ts`, "_blank")!.focus();
+            window.open(`https://github.com/brun0ne/scheduling-sim/blob/main/frame_allocation_src/classes/algorithms/${algorithmName}.ts`, "_blank")!.focus();
         });
 
         /**
@@ -246,6 +246,7 @@ export default class AnimationGUI implements IAnimationGUI {
         {
             const callsTickEl = document.createElement("th");
             callsTickEl.innerHTML = `${newCall.id}`;
+            callsTickEl.style.color = "cyan";
 
             calls_row.appendChild(callsTickEl);
         }
