@@ -7,11 +7,14 @@ export default class Proportional implements AllocationAlgorithm {
     name: string = "Proportional"
 
     allocateFrames(frames: Array<Frame>, processes: ReadonlyArray<Readonly<Process>>): void {
-        const total_calls = processes.reduce((total, process) => total + process.number_of_calls, 0);
+        const total_pages = processes.map((process) => (process.range_of_pages)).reduce((prev, curr) => {
+            return Math.max(prev, curr[1]);
+        }, -1);
 
         let frames_allocated = 0;
         for (let i = 0; i < processes.length; i++) {
-            let frames_for_process = Math.floor((processes[i].number_of_calls / total_calls) * frames.length);
+            const process_page_range = processes[i].range_of_pages[1] - processes[i].range_of_pages[0];
+            let frames_for_process = Math.floor((process_page_range / total_pages) * frames.length);
 
             if (frames_for_process < 1) {
                 frames_for_process = 1;
