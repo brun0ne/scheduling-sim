@@ -21,4 +21,8 @@ export default class Process {
     ended(): boolean {
         return this.time_ran >= this.time_needed;
     }
+
+    reset(): void {
+        this.time_ran = 0;
+    }
 }

@@ -22,6 +22,9 @@ export default class RandomQueries implements DistributionAlgorithm {
         for (let i = 0; i < this.number_of_tries; i++) {
             const not_yet_checked = processors.filter(p => !checked.includes(p));
 
+            if (not_yet_checked.length === 0)
+                break;
+
             const random_index = Math.floor(Math.random() * not_yet_checked.length);
             const random_processor = not_yet_checked[random_index];
 
@@ -32,6 +35,6 @@ export default class RandomQueries implements DistributionAlgorithm {
             checked.push(random_processor);
         }
 
-        return null; // don't migrate
+        return processor; // don't migrate
     }
 }

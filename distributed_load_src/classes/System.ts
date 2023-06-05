@@ -9,8 +9,13 @@ export type CurrentStateData = {
     time: number
 }
 
-export type Results = {
-    average_load: number
+export class Results {
+    total_ticks: number = 0
+    average_load: number = 0
+    migrated: number = 0
+    not_migrated: number = 0
+    postponed: number = 0
+    overloaded_processor_ticks: number = 0
 }
 
 export default class System {
@@ -22,6 +27,8 @@ export default class System {
     finished_processes: Array<Process> = []
 
     distributionAlgorithm: DistributionAlgorithm | null = null
+
+    current_result = new Results()
 
     time: number = 0
 
@@ -38,7 +45,11 @@ export default class System {
             this.processors.push(new Processor(i));
         }
 
-        this.time = 0;
+        this.current_result = new Results(); // reset results
+
+        for (const process of this.process_queue) {
+            process.reset();
+        }
     }
 
     addProcess(process: Process): void {
@@ -73,21 +84,32 @@ export default class System {
             const randomProcessor = this.processors[Math.floor(Math.random() * this.processors.length)];
 
             /* run the distribution algorithm */
-            const processor = this.distributionAlgorithm.pickProcessorToMigrateTo?.(this.getCurrentStateData(process, randomProcessor));
-
-            /* ensure that the algorithm returned a different processor */
-            if (processor == randomProcessor) {
-                throw new Error("Algorithm returned the same processor");
-            }
+            const pickedProcessor = this.distributionAlgorithm.pickProcessorToMigrateTo(this.getCurrentStateData(process, randomProcessor));
 
             /* if the algorithm returned a processor, send the process to that processor */
-            if (processor != null) {
-                processor.startProcess(process);
+            if (pickedProcessor != null) {
+                pickedProcessor.startProcess(process);
+
+                if (pickedProcessor.id === randomProcessor.id) {
+                    /* not migrated */
+                    this.current_result.not_migrated++;
+                }
+                else {
+                    /* migrated */
+                    this.current_result.migrated++;
+                }
+            }
+            else {
+                /* postponed */
+                this.current_result.postponed++;
             }
 
             /* tick all processors */
             for (const processor of this.processors) {
-                processor.tick();
+                const load = processor.tick();
+                if (load > 100) {
+                    this.current_result.overloaded_processor_ticks++;
+                }
             }
 
             /* collect all finished processes */
@@ -97,6 +119,11 @@ export default class System {
                         this.finished_processes.push(process);
                     }
                 }
+            }
+
+            /* if the process execution was postponed, add it to the front of the queue */
+            if (pickedProcessor == null) {
+                this.process_queue.unshift(process);
             }
 
             this.time++;
@@ -117,9 +144,10 @@ export default class System {
     }
 
     getResults(): Results {
-        return {
-            average_load: this.calculateAverageLoad()
-        };
+        this.current_result.average_load = this.calculateAverageLoad();
+        this.current_result.total_ticks = this.time;
+
+        return this.current_result;
     }
 
     calculateAverageLoad(): number {
@@ -128,6 +156,12 @@ export default class System {
     }
 
     simulate(): Results {
-        throw new Error("Method not implemented.");
+        this.init();
+
+        while (!this.isFinished()) {
+            this.nextTick();
+        }
+
+        return this.getResults();
     }
 }

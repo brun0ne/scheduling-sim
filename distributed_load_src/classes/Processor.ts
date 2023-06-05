@@ -13,7 +13,6 @@ export default class Processor {
 
     startProcess(process: Process): void {
         this.running_processes.push(process);
-        console.log(`Processor ${this.id} started process ${process.id}`);
     }
 
     calculateLoad(): number {
@@ -25,7 +24,7 @@ export default class Processor {
         return avgLoad;
     }
 
-    tick(): void {
+    tick(): number {
         this.running_processes.forEach(process => process.tick());
 
         for (const process of this.running_processes) {
@@ -34,12 +33,13 @@ export default class Processor {
             }
         }
 
+        /* remove all finished processes */
         this.running_processes = this.running_processes.filter(process => !process.ended());
 
+        /* calculate load */
         const load = this.calculateLoad();
         this.load_history.push(load);
 
-        if (load > 100)
-            console.warn(`Processor ${this.id} overloaded (${load}%)`);
+        return load;
     }
 }
