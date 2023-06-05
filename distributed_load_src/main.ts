@@ -4,6 +4,7 @@ import Process from "./classes/Process";
 import System from "./classes/System";
 import RandomQueries from "./classes/algorithms/RandomQueries";
 import RandomQueriesUntilSuccess from "./classes/algorithms/RandomQueriesUntilSuccess";
+import Sharing from "./classes/algorithms/Sharing";
 
 function main() {
     if (typeof document !== "undefined") {
@@ -24,7 +25,8 @@ function main() {
 
         const algorithms = [
             new RandomQueries(40, 5),
-            new RandomQueriesUntilSuccess(40)
+            new RandomQueriesUntilSuccess(40),
+            new Sharing(40, 30)
         ];
 
         for (const algorithm of algorithms) {

@@ -6,4 +6,6 @@ export default interface DistributionAlgorithm {
     name: string
 
     pickProcessorToMigrateTo(data: CurrentStateData): Processor | null
+
+    reallocateProcesses?(data: CurrentStateData): void
 }

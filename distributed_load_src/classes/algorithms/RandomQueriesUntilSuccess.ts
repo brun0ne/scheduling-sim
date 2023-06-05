@@ -13,10 +13,13 @@ export default class RandomQueriesUntilSuccess implements DistributionAlgorithm 
 
     pickProcessorToMigrateTo(data: CurrentStateData): Processor | null {
         const { processor, all_processors } = data;
+
+        if (processor.calculateLoad() < this.load_threshold)
+            return processor; // don't migrate
+
         const processors = all_processors.filter(p => p.id !== processor.id);
 
         for (const other of processors) {
-            // console.log(`(${other.id}) load: ${other.calculateLoad()} ? ${this.load_threshold}`);
             if (other.calculateLoad() < this.load_threshold) {
                 return other;
             }

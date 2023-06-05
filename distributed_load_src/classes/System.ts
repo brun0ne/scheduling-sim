@@ -104,6 +104,9 @@ export default class System {
                 this.current_result.postponed++;
             }
 
+            /* reallocate processes */
+            this.distributionAlgorithm.reallocateProcesses?.(this.getCurrentStateData(process, pickedProcessor ?? randomProcessor));
+
             /* tick all processors */
             for (const processor of this.processors) {
                 const load = processor.tick();
