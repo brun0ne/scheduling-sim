@@ -30,6 +30,11 @@
 - Page Fault Control (tries to keep fault frequency between set bounds)
 - Locality Model (*Polish: Model strefowy*)
 
+### Load distribution algorithms:
+- Random queries (N tries)
+- Random queries until success
+- Random queries until success + offloading
+
 ### Installation
 Install [NodeJS](https://nodejs.org/en) (tested on v18.15.0). Run:
 ```bash
