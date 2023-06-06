@@ -4,5 +4,7 @@
     right: 0;
 
     width: 50%;
-    height: 90%;
+    height: 70%;
+
+    overflow-y: auto;
 }
