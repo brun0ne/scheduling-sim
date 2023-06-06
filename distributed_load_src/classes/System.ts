@@ -17,6 +17,7 @@ export class Results {
     not_migrated: number = 0
     postponed: number = 0
     overloaded_processor_ticks: number = 0
+    query_count: number = 0
 }
 
 export default class System {
@@ -85,7 +86,7 @@ export default class System {
             const randomProcessor = this.processors[Math.floor(Math.random() * this.processors.length)];
 
             /* run the distribution algorithm */
-            const pickedProcessor = this.distributionAlgorithm.pickProcessorToMigrateTo(this.getCurrentStateData(process, randomProcessor));
+            const pickedProcessor = this.distributionAlgorithm.pickProcessorToMigrateTo(this.getCurrentStateData(process, randomProcessor), this.current_result);
 
             /* if the algorithm returned a processor, send the process to that processor */
             if (pickedProcessor != null) {
@@ -106,7 +107,10 @@ export default class System {
             }
 
             /* reallocate processes */
-            this.distributionAlgorithm.reallocateProcesses?.(this.getCurrentStateData(process, pickedProcessor ?? randomProcessor));
+            const reallocated = this.distributionAlgorithm.reallocateProcesses?.(this.getCurrentStateData(process, pickedProcessor ?? randomProcessor), this.current_result);
+            if (reallocated != null) {
+                this.current_result.migrated += reallocated;
+            }
 
             /* tick all processors */
             for (const processor of this.processors) {
@@ -191,6 +195,7 @@ export default class System {
         Not migrated: ${results!.not_migrated}
         Postponed: ${results!.postponed}
         Overloaded processor ticks: ${results!.overloaded_processor_ticks}
+        Query count: ${results!.query_count}
         `.replace(RegExp("\n", "g"), "<br />");
     }
 
@@ -210,6 +215,7 @@ export default class System {
             Average load: <span style="color: yellow">${results.average_load.toFixed(2)}</span> +- ${results.std_dev.toFixed(2)}
             Migrations: <span style="color: yellow">${results.migrated}</span> / ${results.not_migrated + results.migrated + results.postponed}
             Postponed process ticks: <span style="color: yellow">${results.postponed}</span>
+            Query count: <span style="color: yellow">${results.query_count}</span>
             `.replace(RegExp("\n", "g"), "<br />");
 
             results_el.innerHTML += "<br />";

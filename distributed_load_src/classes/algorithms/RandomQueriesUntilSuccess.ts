@@ -1,6 +1,6 @@
 import DistributionAlgorithm from "../DistributionAlgorithm";
 import Processor from "../Processor";
-import { CurrentStateData } from "../System";
+import { CurrentStateData, Results } from "../System";
 
 export default class RandomQueriesUntilSuccess implements DistributionAlgorithm {
     name: string = "RandomQueriesUntilSuccess"
@@ -12,7 +12,7 @@ export default class RandomQueriesUntilSuccess implements DistributionAlgorithm 
         this.load_threshold = load_threshold;
     }
 
-    pickProcessorToMigrateTo(data: CurrentStateData): Processor | null {
+    pickProcessorToMigrateTo(data: CurrentStateData, results: Results): Processor | null {
         const { processor, all_processors } = data;
 
         if (processor.calculateLoad() < this.load_threshold)
@@ -21,6 +21,7 @@ export default class RandomQueriesUntilSuccess implements DistributionAlgorithm 
         const processors = all_processors.filter(p => p.id !== processor.id);
 
         for (const other of processors) {
+            results.query_count++;
             if (other.calculateLoad() < this.load_threshold) {
                 return other;
             }
