@@ -1,0 +1,8 @@
+#current_state_wrapper {
+    position: fixed;
+    top: 10%;
+    right: 0;
+
+    width: 50%;
+    height: 90%;
+}

@@ -5,6 +5,7 @@ import RandomQueriesUntilSuccess from "./RandomQueriesUntilSuccess";
 
 export default class Sharing implements DistributionAlgorithm {
     name: string = "Sharing"
+    display_name: string = "Sharing (RQUS + offloading)"
 
     load_treshold: number
     ask_threshold: number

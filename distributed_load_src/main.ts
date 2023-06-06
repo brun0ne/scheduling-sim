@@ -1,5 +1,7 @@
 // import Menu from "./classes/Menu";
 
+import Menu from "./classes/Menu";
+
 import Process from "./classes/Process";
 import System from "./classes/System";
 import RandomQueries from "./classes/algorithms/RandomQueries";
@@ -8,8 +10,8 @@ import Sharing from "./classes/algorithms/Sharing";
 
 function main() {
     if (typeof document !== "undefined") {
-        // const menu = new Menu();
-        // menu.init();
+        const menu = new Menu();
+        menu.init();
     }
     else {
         /*

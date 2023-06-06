@@ -4,6 +4,7 @@ import { CurrentStateData } from "../System";
 
 export default class RandomQueriesUntilSuccess implements DistributionAlgorithm {
     name: string = "RandomQueriesUntilSuccess"
+    display_name: string = "Random Queries Until Success"
 
     load_threshold: number
 

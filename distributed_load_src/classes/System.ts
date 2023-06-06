@@ -12,6 +12,7 @@ export type CurrentStateData = {
 export class Results {
     total_ticks: number = 0
     average_load: number = 0
+    std_dev: number = 0
     migrated: number = 0
     not_migrated: number = 0
     postponed: number = 0
@@ -148,6 +149,7 @@ export default class System {
 
     getResults(): Results {
         this.current_result.average_load = this.calculateAverageLoad();
+        this.current_result.std_dev = this.calculateStandardDeviation(this.current_result.average_load);
         this.current_result.total_ticks = this.time;
 
         return this.current_result;
@@ -158,6 +160,12 @@ export default class System {
         return total_load / this.processors.length;
     }
 
+    calculateStandardDeviation(average?: number): number {
+        const avg = average ?? this.calculateAverageLoad();
+        const variance = this.processors.reduce((acc, processor) => acc + Math.pow(processor.calculateAverageLoad() - avg, 2), 0) / this.processors.length;
+        return Math.sqrt(variance);
+    }
+
     simulate(): Results {
         this.init();
 
@@ -166,5 +174,43 @@ export default class System {
         }
 
         return this.getResults();
+    }
+
+    displayResults(results?: Results, algStr: string = this.distributionAlgorithm!.display_name ?? this.distributionAlgorithm!.name): void {
+        const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results") as HTMLElement;
+        results_el.innerHTML = `
+        Algorithm: ${algStr}
+
+        Average load: ${results!.average_load.toFixed(2)} +- ${results!.std_dev.toFixed(2)}
+
+        Total ticks: ${results!.total_ticks}
+        Migrated: ${results!.migrated}
+        Not migrated: ${results!.not_migrated}
+        Postponed: ${results!.postponed}
+        Overloaded processor ticks: ${results!.overloaded_processor_ticks}
+        `.replace(RegExp("\n", "g"), "<br />");
+    }
+
+    compareAllAndDisplayResults(algorithms: Array<DistributionAlgorithm>): void {
+        const results_wrapper = document.getElementById("results_wrapper") as HTMLElement;
+        results_wrapper.style.display = "flex";
+
+        const results_el = document.getElementById("results") as HTMLElement;
+        results_el.innerHTML = "";
+
+        for (let i = 0; i < algorithms.length; i++) {
+            this.setAlgorithm(algorithms[i]);
+            const results: Results = this.simulate();
+
+            results_el.innerHTML += `
+            Algorithm: ${algorithms[i].display_name ?? algorithms[i].name}
+            Average load: ${results.average_load.toFixed(2)} +- ${results.std_dev.toFixed(2)}
+            `.replace(RegExp("\n", "g"), "<br />");
+
+            results_el.innerHTML += "<br />";
+        }
     }
 }
