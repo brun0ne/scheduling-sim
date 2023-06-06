@@ -206,8 +206,10 @@ export default class System {
             const results: Results = this.simulate();
 
             results_el.innerHTML += `
-            Algorithm: ${algorithms[i].display_name ?? algorithms[i].name}
-            Average load: ${results.average_load.toFixed(2)} +- ${results.std_dev.toFixed(2)}
+            Algorithm: <span style="color: yellow">${algorithms[i].display_name ?? algorithms[i].name}</span>
+            Average load: <span style="color: yellow">${results.average_load.toFixed(2)}</span> +- ${results.std_dev.toFixed(2)}
+            Migrations: <span style="color: yellow">${results.migrated}</span> / ${results.not_migrated + results.migrated + results.postponed}
+            Postponed process ticks: <span style="color: yellow">${results.postponed}</span>
             `.replace(RegExp("\n", "g"), "<br />");
 
             results_el.innerHTML += "<br />";
